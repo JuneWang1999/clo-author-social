@@ -45,7 +45,7 @@ Fill every section of the template. For each pattern, include at least one quote
 
 ### 5. Self-Citation Check
 
-Scan the sampled papers for `\cite{}`, `\citet{}`, `\citep{}` commands referencing the author's own prior work. List any citation keys found. Cross-check each against `Bibliography_base.bib` in the current project. If any self-citation keys are missing from the bib, include a `## Self-Citation Gaps` appendix in the style guide output listing them -- so future `/write` calls don't invent or drop those references.
+Scan the sampled papers for `\cite{}`, `\textcite{}`, `\parencite{}`, `\citet{}`, `\citep{}` commands referencing the author's own prior work. List any citation keys found. Cross-check each against `Bibliography_base.bib` in the current project. If any self-citation keys are missing from the bib, include a `## Self-Citation Gaps` appendix in the style guide output listing them -- so future `/write` calls don't invent or drop those references.
 
 ### 6. Present Summary
 

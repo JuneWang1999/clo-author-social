@@ -6,15 +6,15 @@
 - [ ] Verifier pass (0 or 100)
 
 ## Manuscript
-- [ ] Abstract <= 150 words (INV-5)
-- [ ] JEL codes and keywords present (INV-6)
+- [ ] Abstract <= 250 words or the journal limit (INV-5)
+- [ ] 3–5 keywords present; public significance / impact statement prepared if the journal requires one (INV-6)
 - [ ] All tables have notes (INV-1)
 - [ ] All figures have notes (INV-2)
 - [ ] No `\hline` -- booktabs only (INV-3)
 - [ ] Notation consistent throughout (INV-7)
 - [ ] Numbers in text match tables (INV-11)
 - [ ] Compiles cleanly with no warnings
-- [ ] `biblatex` + `biber`, not `natbib` (INV-9)
+- [ ] biblatex-apa (`style=apa`) + `biber`, not `natbib`/`apacite` (INV-9)
 - [ ] `hyperref` second-to-last, `cleveref` after (INV-10)
 - [ ] No `Figure~\ref{}` -- use `\cref{}` throughout
 
@@ -31,4 +31,7 @@
 - [ ] Target journal selected (from journal profiles)
 - [ ] Formatting matches journal requirements
 - [ ] Author information complete
-- [ ] Significance stars match journal convention (INV-4)
+- [ ] Statistics in APA form; asterisks only if the journal allows them (INV-4)
+- [ ] Method meets JARS, incl. transparency statement (INV-23)
+- [ ] `mask` option on and text free of self-identification (masked-review journals)
+- [ ] Float placement matches the journal (`floatsintext` on or off)

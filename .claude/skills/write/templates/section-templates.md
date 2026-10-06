@@ -1,6 +1,51 @@
 # Section Templates — Paper Drafting by Section and Paper Type
 
-Structure guidance for each major section of an economics paper, adapted by paper type (reduced-form, structural, theory+empirics, descriptive/measurement).
+Structure guidance for each major section of an empirical paper, adapted by paper type (reduced-form, structural, theory+empirics, descriptive/measurement). Papers are written as APA 7 manuscripts — the first section below maps every paper-type template onto the APA Introduction / Method / Results / Discussion structure.
+
+---
+
+## APA 7 Manuscript Structure (read first)
+
+All papers are APA 7 manuscripts (`.claude/rules/working-paper-format.md`). The paper-type templates further down still define the *argument moves*; this section defines *where they go*. Map them as follows:
+
+| Paper-type template section | APA location |
+|-----------------------------|--------------|
+| Introduction | Introduction (no heading) |
+| Data | Method → Participants, Measures |
+| Empirical Strategy / Model | Method → Procedure / Design, Data Analysis (formal models may get their own Level 2 subsection) |
+| Results | Results |
+| Conclusion | Discussion |
+
+### Introduction (no heading; 1000--2000 words)
+1. **Problem** -- Why the question matters for theory, practice, or policy (1 paragraph)
+2. **Literature** -- What is known, organized by argument rather than paper-by-paper; Level 2 headings allowed in long introductions
+3. **Gap** -- What is not known and why prior designs could not answer it
+4. **Present study** -- What this study does (design, sample) in 2--3 sentences
+5. **Hypotheses / research questions** -- Numbered (H1, H2 / RQ1, RQ2), matching the preregistration wording; mark which are confirmatory
+
+### Method (Level 1)
+- **Transparency and Openness** -- Preregistration link and date, deviations (or "none"), data/materials/code availability, reporting standard followed, software and package versions
+- **Participants** -- Recruitment, eligibility, setting, dates, final *N* with demographics (and how collected), exclusions and attrition with reasons (CONSORT-style flow for trials), ethics approval and consent/assent
+- **Sample Size Determination** -- Power analysis: effect size and its source, alpha, power; for nested designs ICC, cluster sizes, and MDES; or a resource-constraint justification with sensitivity power
+- **Measures** -- One paragraph (Level 3 heading) per construct: instrument, items, response scale, scoring, example item, reliability in this sample ($\omega$ preferred, with CI), validity evidence
+- **Procedure / Design** -- Conditions, materials, assignment method and level of randomization, blinding, fidelity monitoring, timing of measurement
+- **Data Analysis** -- Model per hypothesis, estimator, treatment of nesting (multilevel, cluster-robust SEs), missing data (FIML / multiple imputation, with assumptions), inference criteria, multiple-comparison control, equivalence or Bayesian tests when claiming null effects; exploratory analyses labeled
+
+### Results (Level 1)
+1. **Preliminary analyses** -- Missing data patterns, attrition (overall and differential), baseline equivalence, assumption checks, measurement model fit and invariance
+2. **Confirmatory analyses** -- One Level 2 heading per hypothesis in preregistered order; lead with the answer, then the statistics (INV-4)
+3. **Exploratory analyses** -- Labeled as exploratory; no confirmatory language
+4. **Sensitivity analyses** -- Alternative missing-data handling, covariate sets, exclusions
+
+### Discussion (Level 1; 1000--1500 words)
+1. **Summary of findings** -- Each hypothesis: supported / not supported, with effect size
+2. **Interpretation** -- Relation to theory and prior effect sizes
+3. **Limitations** -- Design, measurement, sample; specific, not generic
+4. **Constraints on generality** -- Populations, settings, measures, and times to which the results should and should not generalize
+5. **Implications** -- Theory, practice, policy; future research that would resolve remaining uncertainty
+
+### Multi-study papers
+Introduction → `\section{Study 1}` (brief rationale, then Method / Results / Discussion as Level 2) → … → `\section{General Discussion}` (synthesis across studies, internal meta-analysis if appropriate, limitations, generality).
 
 ---
 
@@ -223,4 +268,4 @@ How to narrate by output type:
 | Strategy/Model | 800-1500 | Design-specific (DiD/IV/RDD/ES) | Environment, decisions, equilibrium, estimation | Model, propositions, tests | N/A (merged into Data) |
 | Results | 800-1500 | Main spec, robustness, heterogeneity | Estimates, model fit, counterfactuals, welfare | Prediction-by-prediction evidence | Key facts, decompositions, implications |
 | Conclusion | 500-700 | Policy implications | Counterfactual implications + model limitations | What model gets right/wrong | Research agenda enabled by new data |
-| Abstract | 100-150 | Question, design, finding with magnitude | Question, model, counterfactual finding | Question, prediction, test result | Question, measurement, key fact |
+| Abstract | ≤ 250 (APA) | Question, design, finding with magnitude | Question, model, counterfactual finding | Question, prediction, test result | Question, measurement, key fact |

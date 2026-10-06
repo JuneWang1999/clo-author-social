@@ -8,7 +8,8 @@ Known failure points and edge cases for paper/code/strategy review.
 - Advisory scoring for talks means low scores don't block pipeline progression.
 - Cold-read protocol means critics don't see prior rounds -- they may flag the same issue differently across rounds. This is a feature, not a bug.
 - Code review checks both the script AND its output. A script that runs clean but produces wrong numbers still fails.
-- Writer-critic deductions from `working-paper-format.md` are required (blocking), not advisory. Missing `\doublespacing` is -5, not a suggestion.
+- Writer-critic deductions from `working-paper-format.md` (APA 7) are required (blocking), not advisory. Loading `setspace`/`geometry` over the `apa7` class is -3, not a suggestion.
+- Don't carry economics expectations into APA reviews: no JEL codes, no roadmap paragraph, unnumbered sections, double-spaced references, and *p* values reported exactly are all correct.
 - Voice fidelity (writer-critic category 7) is only scored when `.claude/references/personal-style-guide.md` has real content. If the style guide is still a template, skip and report.
 - The strategist-critic uses severity classification (CRITICAL/MAJOR/MINOR), not a point-deduction rubric. The coder-critic and writer-critic use point deductions.
 - Theorist-critic should not lecture authors on their own methods. Check `.claude/references/domain-profile.md` for the paper's authors before flagging textbook issues.

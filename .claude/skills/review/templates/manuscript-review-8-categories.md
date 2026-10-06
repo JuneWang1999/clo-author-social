@@ -8,22 +8,26 @@ Extracted from `writer-critic.md`. Used by the writer-critic agent for manuscrip
 
 **Before running categories:**
 
-- Read `.claude/rules/content-invariants.md` -- enforce INV-1 through INV-13 and INV-22. Cite invariant numbers (e.g., "violates INV-3") in report alongside deductions.
-- Read `.claude/rules/working-paper-format.md` -- enforce all Required items listed in the deduction table.
+- Read `.claude/rules/content-invariants.md` -- enforce INV-1 through INV-13, INV-22, INV-23 (JARS), and INV-24 (bias-free language). Cite invariant numbers (e.g., "violates INV-3") in report alongside deductions.
+- Read `.claude/rules/working-paper-format.md` -- APA 7 manuscript standard; enforce all Required items listed in the deduction table.
+- Read the target journal's profile in `.claude/references/journal-profiles.md` -- abstract limit, float placement, asterisk policy, required statements.
 - Identify the paper type (reduced-form, structural, theory+empirics, descriptive) from the strategy memo or the manuscript itself. This determines which checks apply.
 
 ---
 
 ## 1. Structure and Flow
 
-- Does the paper follow the standard section order for its paper type?
+- Does the paper follow APA structure: untitled Introduction → Method → Results → Discussion → References (or Study 1…k → General Discussion for multi-study papers)?
+- Does the introduction end with numbered hypotheses or research questions that match the preregistration (if any)?
+- Are confirmatory and exploratory analyses clearly separated in Results?
+- Does the Discussion address limitations and constraints on generality specifically?
 - Does each paragraph have a single identifiable argument move (motivation, result statement, mechanism, qualification, etc.)?
 - Are transitions between sections coherent?
-- Does the introduction contribution statement appear in the first 2 pages?
-- Is there a roadmap? (Optional but if present, is it one sentence?)
-- Does the conclusion restate the main finding with effect size?
+- Does the introduction state the gap and the present study's contribution before the hypotheses?
+- No economics-style roadmap paragraph ("The rest of the paper is organized as follows") -- APA papers do not use one (-2)
+- Does the Discussion restate each main finding with its effect size?
 
-**Paper-type-specific:**
+**Paper-type-specific** (argument moves inside the APA introduction; APA introductions end with hypotheses and usually do not preview numerical results):
 
 **Reduced-form:** Introduction follows: motivation -> question -> stakes -> identification preview -> result -> literature positioning?
 
@@ -40,7 +44,9 @@ Extracted from `writer-critic.md`. Used by the writer-critic agent for manuscrip
 - Every empirical claim is supported by a table, figure, or citation
 - No orphan claims (assertions without evidence)
 - Numbers in text match the tables and figures exactly (INV-11)
-- Effect sizes stated with units ("4.2 percentage points", not "the coefficient is significant")
+- Effect sizes stated with units or standardized metrics and 95% CIs ("*d* = 0.32, 95% CI [0.10, 0.54]", not "the effect was significant") (INV-4)
+- Statistics formatted per APA: exact *p*, italicized symbols with *df*, no leading zeros on bounded statistics (INV-4) -- -2 per, max -10
+- Null results not described as "no effect" without an equivalence test, Bayes factor, or CI-based argument -- -3 per
 - Comparisons to prior literature include specific magnitudes from cited papers
 - No stale numbers (values that don't match current output files)
 
@@ -58,7 +64,10 @@ Extracted from `writer-critic.md`. Used by the writer-critic agent for manuscrip
 - No overclaiming: causal language only in papers with causal designs (INV-8)
 - Assumptions named and stated formally (parallel trends, exclusion restriction, continuity, etc.)
 - Threats acknowledged -- no "our results are robust to all concerns"
-- Estimand clearly stated (ATT, ATE, LATE, or equivalent)
+- Estimand clearly stated (ATE, ITT vs. treatment-on-the-treated/CACE, conditional indirect effect, or equivalent)
+- Method meets JARS (INV-23): sample-size justification, exclusions/attrition/missing data, reliability in this sample, randomization level, transparency statement -- -5 per missing element, max -15
+- Nested data (students in classrooms/schools) analyzed with multilevel models or cluster-robust inference -- -10 if ignored
+- Mediation/longitudinal claims match the design: no causal mediation language from cross-sectional data (INV-8)
 
 **Paper-type-specific:**
 
@@ -69,6 +78,10 @@ Extracted from `writer-critic.md`. Used by the writer-critic agent for manuscrip
 **Theory + empirics:** Testable predictions numbered and linked to evidence?
 
 **Descriptive:** No causal language. Patterns described as correlations or associations.
+
+**Experiment / RCT:** Randomization level and method, manipulation checks, attrition (overall and differential), and intention-to-treat analysis described?
+
+**Measurement / psychometric:** Factor structure, reliability, and measurement invariance reported before group comparisons?
 
 ---
 
@@ -97,32 +110,39 @@ Run the 24-pattern AI detection check from the Writer's cleanup pass:
 - Filler phrases ("It's important to note that...", "It is worth mentioning...") -- -2 per, max -6
 - Announcements ("In the next section, we will discuss...") -- -2 per, max -6
 
+**Bias-free language (INV-24):**
+- "Subjects" for human participants, non-specific group labels, gendered defaults, "the elderly" -- -2 per, max -6
+
 ---
 
-## 5. LaTeX and Format
+## 5. APA Format and LaTeX
 
 Enforce all Required items from `.claude/rules/working-paper-format.md`:
 
 | Issue | Deduction |
 |-------|-----------|
-| Wrong document class or font size (not 12pt article) | -5 |
-| Missing `\doublespacing` in body | -5 |
-| Using `natbib` instead of `biblatex` (INV-9) | -3 |
-| Using `bibtex` instead of `biber` (INV-9) | -3 |
-| Missing `fancyhdr` page number setup | -2 |
+| Not `apa7` class, or not `man` mode | -5 |
+| Loads `geometry`, `setspace`, `fancyhdr`, or `titlesec`; manual `\doublespacing` | -3 |
+| Missing `\shorttitle{}` or running head > 50 characters | -2 |
 | `\textbf{}` wrapping `\title{}` | -3 |
-| `\and` between authors instead of `\quad` | -3 |
-| Repeated affiliation text outside `\thanks{}` | -3 |
-| Missing JEL codes or keywords (INV-6) | -5 |
-| `\hline` instead of booktabs rules (INV-3) | -3 |
-| Missing table notes (INV-1) | -5 per table, max -15 |
+| `\and` / `\thanks{}` for authors instead of `\authorsnames` / `\authorsaffiliations` | -3 |
+| Author note missing elements the journal requires (ORCID, disclosures, correspondence) | -2 |
+| Missing keywords, or JEL codes present (INV-6) | -5 |
+| Abstract exceeds 250 words or the journal limit (INV-5) | -3 |
+| Introduction has a heading; Method/Results/Discussion headings missing | -3 |
+| Manually styled or numbered headings; skipped heading levels | -2 |
+| `natbib`, `apacite`, or `bibtex` instead of biblatex-apa + biber (INV-9) | -3 |
+| `\citet`/`\citep` or hand-typed citations instead of `\textcite`/`\parencite` | -1 per, max -5 |
+| `\hline` or vertical rules (INV-3) | -3 |
+| Missing table notes beginning with *Note.* (INV-1) | -5 per table, max -15 |
 | Missing figure notes (INV-2) | -5 per figure, max -15 |
-| `hyperref` not loaded second-to-last (INV-10) | -2 |
+| Caption below the table/figure instead of above | -2 per, max -6 |
+| Asterisks without a probability note, or asterisks the journal profile disallows (INV-4) | -3 |
+| `hyperref` not loaded second-to-last, or loaded with clashing options (INV-10) | -2 |
 | Missing `cleveref` after `hyperref` (INV-10) | -2 |
-| Manual `Figure~\ref{}` instead of `\cref{}` | -1 per, max -5 |
+| Manual `Table~\ref{}` instead of `\Cref{}` | -1 per, max -5 |
 | Missing `microtype` | -2 |
-| Missing abstract `\noindent` and `\singlespacing` | -2 |
-| Abstract exceeds 150 words (INV-5) | -3 |
+| References single-spaced or shrunk (`\small` before `\printbibliography`) | -2 |
 | No titles inside figures -- titles in `\caption{}` only (INV-12) | -3 per, max -9 |
 | R/Python/Julia output includes `\begin{table}` wrapper (INV-13) | -3 per, max -9 |
 
@@ -132,9 +152,10 @@ Enforce all Required items from `.claude/rules/working-paper-format.md`:
 
 Verifier-lite checks:
 
-- Does the paper compile with `latexmk` without errors? If not: -20
+- Does the paper compile with `latexmk` (pdfLaTeX + biber) without errors? If not: -20
 - All `\ref{}` and `\cref{}` references resolved (no "??" in output)? -3 per unresolved
-- All `\cite{}` keys exist in the bibliography file? -3 per missing
+- All `\textcite{}` / `\parencite{}` keys exist in the bibliography file? -3 per missing
+- biber warnings about missing DOIs or malformed entries? -1 per, max -5
 - All cited tables/figures exist in `paper/tables/` and `paper/figures/`? -5 per missing
 - No overfull/underfull hbox warnings exceeding 10pt? -1 per, max -5
 
@@ -184,6 +205,8 @@ When invoked via `/review --all` or `/review --peer`, run all 8 categories.
 **Date:** [YYYY-MM-DD]
 **Reviewer:** writer-critic
 **Paper type:** [Reduced-form / Structural / Theory+Empirics / Descriptive]
+**Design:** [Experiment / Cluster RCT / Quasi-experiment / Correlational / Longitudinal / Psychometric / Meta-analysis]
+**Target journal:** [from journal profile, or "generic APA"]
 **Score:** [XX/100]
 **Mode:** [Full / Standalone (prose quality only)]
 
@@ -191,7 +214,8 @@ When invoked via `/review --all` or `/review --peer`, run all 8 categories.
 ## Claims and Evidence: [SUPPORTED/GAPS/UNSUPPORTED]
 ## Identification Fidelity: [FAITHFUL/OVERCLAIMED/MISREPRESENTED]
 ## Writing Quality: [CLEAN/AI PATTERNS FOUND/NEEDS REWRITE]
-## LaTeX and Format: [COMPLIANT/ISSUES/NON-COMPLIANT]
+## APA Format and LaTeX: [COMPLIANT/ISSUES/NON-COMPLIANT]
+## JARS Completeness (INV-23): [COMPLETE/GAPS]
 ## Compilation: [PASS/WARNINGS/FAIL]
 ## Voice Fidelity: [MATCH/DRIFT/NOT SCORED]
 ## Notation Consistency: [CONSISTENT/INCONSISTENCIES]

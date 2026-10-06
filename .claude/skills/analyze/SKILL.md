@@ -205,7 +205,7 @@ Inspired by Scott Cunningham's replication methodology: **if two independent imp
 ### References
 | File | Purpose |
 |------|---------|
-| `analyze/references/table-standards.md` | Full table formatting standards: booktabs, coefficient display, panel structure, R packages, file naming |
+| `analyze/references/table-standards.md` | APA 7 table standards: booktabs, statistical reporting, table types, R packages, file naming |
 | `analyze/references/figure-standards.md` | Full figure formatting standards: themes, colors, axis labels, export settings, common plot types |
 
 ### Config

@@ -73,8 +73,10 @@ cd paper/talks && latexmk talk.tex
 cd paper && latexmk -c
 ```
 
-> **Note:** `paper/latexmkrc` configures XeLaTeX, TEXINPUTS, and BIBINPUTS.
-> On Overleaf, set compiler to XeLaTeX via Menu > Compiler — Overleaf reads `latexmkrc` automatically.
+> **Note:** Papers are APA 7 manuscripts (`apa7` class, `man` mode, biblatex-apa + biber) — see
+> `.claude/rules/working-paper-format.md`; start from `templates/latex/apa7-main.tex`.
+> `paper/latexmkrc` configures pdfLaTeX, biber, TEXINPUTS, and BIBINPUTS.
+> On Overleaf, set compiler to pdfLaTeX via Menu > Compiler — Overleaf reads `latexmkrc` automatically.
 
 ---
 

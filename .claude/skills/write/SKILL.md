@@ -1,7 +1,7 @@
 ---
 name: write
-description: Draft academic paper sections using paragraph-level argument moves. Cleanup pass strips AI patterns after drafting. Replaces /draft-paper and /humanizer.
-argument-hint: "[section or mode: intro | strategy | results | conclusion | abstract | full | humanize | style-guide] [file path (optional)]"
+description: Draft APA 7 manuscript sections (Introduction, Method, Results, Discussion) using paragraph-level argument moves. Cleanup pass strips AI patterns after drafting. Replaces /draft-paper and /humanizer.
+argument-hint: "[section or mode: intro | method | results | discussion | abstract | full | humanize | style-guide] [file path (optional)]"
 allowed-tools: Read,Grep,Glob,Write,Edit,Task
 ---
 
@@ -16,10 +16,11 @@ Draft paper sections, apply a cleanup pass, or extract a personal style guide fr
 ## Modes
 
 ### `/write [section]` — Draft Paper Section
-Draft a specific section: `intro`, `strategy`, `results`, `conclusion`, `abstract`, or `full`.
+Draft a specific section of an APA 7 manuscript: `intro`, `method`, `results`, `discussion`, `abstract`, or `full`. Legacy aliases: `strategy` → `method` (Design and Data Analysis subsections), `conclusion` → `discussion`, `data` → `method` (Participants and Measures subsections).
 
 **Agent:** Writer
-**Output:** LaTeX section file in paper/sections/
+**Output:** LaTeX section file in paper/sections/; `paper/main.tex` created from `templates/latex/apa7-main.tex` if missing
+**Format:** `.claude/rules/working-paper-format.md` (APA 7, `apa7` class, biblatex-apa)
 
 Workflow:
 
@@ -29,7 +30,7 @@ Before drafting, read all available context:
 1. Read existing paper draft in `paper/` (if it exists)
 2. Read `master_supporting_docs/` for notes, outlines, research specs
 3. Read most recent `quality_reports/research_spec_*.md` or `quality_reports/lit_review_*.md`
-4. Read `.claude/references/domain-profile.md` for field conventions
+4. Read `.claude/references/domain-profile.md` for field conventions and `.claude/references/journal-profiles.md` for the target journal (abstract limit, required statements, float placement)
 5. Check `Bibliography_base.bib` for available citations
 6. Scan `paper/tables/` and `paper/figures/` for generated output
 7. Read `quality_reports/results_summary.md` if it exists (from Coder)
@@ -48,13 +49,13 @@ This determines which section templates the Writer uses.
 
 Based on `$ARGUMENTS`:
 - **`full`**: Draft all sections in sequence, pausing between major sections for user feedback
-- **`intro`**: Draft introduction (most common request)
-- **`strategy`**: Draft empirical strategy (reduced-form), model + estimation (structural), or model + tests (theory+empirics)
-- **`results`**: Draft results — narration style depends on paper type and output type (regression tables, event study figures, counterfactual simulations, etc.)
-- **`conclusion`**: Draft conclusion with type-appropriate ending (policy implications, counterfactual implications, or research agenda)
-- **`abstract`**: Draft abstract (must have other sections first)
-- **`data`**: Draft data section — expanded for descriptive/measurement papers
-- **`model`**: Draft model section (structural or theory+empirics papers only)
+- **`intro`**: Draft the introduction (no heading) ending in numbered hypotheses or research questions
+- **`method`**: Draft the Method section with JARS subsections (INV-23): Transparency and Openness, Participants, Sample Size Determination, Measures, Procedure, Data Analysis. Design-specific content (randomization, quasi-experimental assumptions, measurement models) goes in Procedure/Design and Data Analysis.
+- **`results`**: Draft results — preliminary analyses, confirmatory tests in preregistered order, then labeled exploratory analyses; APA statistics (INV-4)
+- **`discussion`**: Draft the Discussion — support per hypothesis, interpretation, limitations, constraints on generality, implications for theory and practice
+- **`abstract`**: Draft abstract (must have other sections first); ≤ 250 words or journal limit; plus 3–5 keywords
+- **`model`**: Draft a formal model or measurement-model subsection (theory+empirics or psychometric papers)
+- **Multi-study papers:** `/write method study2` etc. drafts within `\section{Study 2}`; `/write discussion general` drafts the General Discussion
 - **No argument**: Ask user which section to draft
 
 #### 4. Dispatch Writer
@@ -68,10 +69,14 @@ Before presenting the draft:
 - [ ] Every paragraph has an identifiable purpose (argument move type)
 - [ ] Findings lead sentences — not buried after setup
 - [ ] Design-specific elements present (see writer.md for checklists per design)
+- [ ] APA structure: no Introduction heading; Method / Results / Discussion as Level 1 headings; headings not numbered or styled by hand
+- [ ] Method contains every JARS element (INV-23): sample-size justification, exclusions/missing data, reliability in this sample, transparency statement
+- [ ] Statistics in APA form (INV-4): exact *p*, effect size + 95% CI, *df*, no leading zero on bounded statistics
+- [ ] Bias-free, specific language about participants (INV-24)
 - [ ] Every displayed equation is numbered (`\label{eq:...}`)
-- [ ] All `\cite{}` keys exist in `Bibliography_base.bib`
+- [ ] All `\textcite{}` / `\parencite{}` keys exist in `Bibliography_base.bib`
 - [ ] Introduction contribution paragraph names specific papers
-- [ ] Effect sizes stated with units
+- [ ] Effect sizes stated with units or as standardized effects interpreted against field benchmarks
 - [ ] No banned hedging phrases
 - [ ] Notation consistent throughout
 - [ ] All tables/figures referenced actually exist in `paper/tables/` or `paper/figures/`
@@ -84,9 +89,9 @@ Before presenting the draft:
 
 Present sections through drafting gates, pausing for approval at each:
 
-**GATE 1:** Introduction + Literature positioning → present, wait for approval
-**GATE 2:** Data + Empirical Strategy (or Model) → present, wait for approval
-**GATE 3:** Results + Robustness + Conclusion → present, wait for approval
+**GATE 1:** Introduction (literature positioning + hypotheses) → present, wait for approval
+**GATE 2:** Method (participants, measures, procedure, design, data analysis) → present, wait for approval
+**GATE 3:** Results + Discussion + Abstract → present, wait for approval
 
 For single-section drafts, present the section directly. For `full`, use all three gates.
 
@@ -132,7 +137,7 @@ Principles for the extraction:
 - **Ground every claim in the corpus.** Each pattern must have at least one quoted example.
 - **Extract, don't prescribe.** The guide records the author's observed behavior, not what the Writer thinks is good style.
 - **Don't duplicate `domain-profile.md`.** The style guide is about voice; the domain profile is about field conventions.
-- **Don't override working-paper-format invariants.** Voice doesn't trump INV-1..21.
+- **Don't override the APA format or content invariants.** Voice doesn't trump INV-1..24 or `working-paper-format.md`.
 
 ### `/write humanize [file]` — Cleanup Pass Only
 Strip AI writing patterns from existing text without rewriting content.
@@ -150,25 +155,27 @@ Strips 24 patterns across 4 categories:
 
 ## Section Standards
 
-**All paper types share the same backbone. Moves diverge by type — see writer.md for full templates.**
+**APA 7 empirical article (JARS-Quant). Word counts are defaults — the journal profile's limits govern.**
 
-| Section | Length | Reduced-Form | Structural | Theory+Empirics | Descriptive |
-|---------|--------|-------------|-----------|----------------|-------------|
-| Introduction | 1000-1500 | ...preview → result → contribution | ...model preview → counterfactual → contribution | ...theory preview → test result → contribution | ...data innovation → key fact → contribution |
-| Data | 800-1200 | Treatment, outcome, controls | Moments that identify parameters | Standard | 1200-1800 (core contribution) |
-| Strategy/Model | 800-1500 | Design-specific (DiD/IV/RDD/ES) | Environment → decisions → equilibrium → estimation | Model → propositions → tests | N/A (merged into Data) |
-| Results | 800-1500 | Main spec → robustness → heterogeneity | Estimates → model fit → counterfactuals → welfare | Prediction-by-prediction evidence | Key facts → decompositions → implications |
-| Conclusion | 500-700 | Policy implications | Counterfactual implications + model limitations | What model gets right/wrong | Research agenda enabled by new data |
-| Abstract | 100-150 | Question, design, finding with magnitude | Question, model, counterfactual finding | Question, prediction, test result | Question, measurement, key fact |
+| Section | Length | Experiment / RCT | Quasi-experimental | Correlational / longitudinal | Measurement / psychometric |
+|---------|--------|------------------|--------------------|------------------------------|---------------------------|
+| Introduction (no heading) | 1000-2000 | Theory → gap → hypotheses about manipulation | Policy/practice problem → gap → design preview → RQs | Theory → gap → predicted associations | Construct → why existing measures fall short → validity questions |
+| Method | 1000-2000 | Participants, power, conditions, randomization, fidelity, manipulation checks | Sample, assignment mechanism, assumptions, baseline equivalence | Sample, waves, attrition, measures, model | Item development, sample(s), validity evidence plan |
+| Results | 1000-2000 | Preliminary → confirmatory (preregistered order) → exploratory | Main estimate → assumption checks → sensitivity | Measurement model → structural/growth model → robustness | Factor structure → reliability → invariance → validity evidence |
+| Discussion | 1000-1500 | Support per hypothesis, theory, limitations, generality | Practice/policy implications, generality | Limits of causal inference, future designs | Recommended uses and misuses |
+| Abstract | ≤ 250 | Problem, participants, design, effect size + CI, implication | Same | Same | Same |
 
 ---
 
 ## LaTeX Conventions
 
-- `\citet{}` for textual citations ("Smith (2024) shows...")
-- `\citep{}` for parenthetical citations ("...is well documented (Smith, 2024)")
+- APA 7 manuscript: `\documentclass[man,floatsintext]{apa7}` — start from `templates/latex/apa7-main.tex`
+- `\textcite{}` for narrative citations ("Smith (2024) shows...")
+- `\parencite{}` for parenthetical citations ("...is well documented (Smith, 2024)"); `\parencite[p.~12]{key}` for quotations
+- `\Cref{tab:...}` / `\Cref{fig:...}` → "Table 1" / "Figure 2"; refer to sections by name
 - `booktabs` rules (`\toprule`, `\midrule`, `\bottomrule`) — never `\hline`
-- Notation protocol: `Y_{it}`, `D_{it}`, `\gamma_i`, `\delta_t`, `\varepsilon_{it}`
+- Statistics in math or italics: `\textit{t}(118) = 2.45, \textit{p} = .016, \textit{d} = 0.45, 95\% CI [0.08, 0.81]`
+- Notation protocol: `references/notation-protocol.md` (multilevel $Y_{ij}$, latent-variable, and potential-outcomes notation)
 
 ---
 

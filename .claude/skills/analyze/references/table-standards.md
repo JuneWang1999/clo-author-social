@@ -1,321 +1,227 @@
-# Table Standards
+# Table Standards (APA 7)
 
-Publication-quality tables using standard economics formatting (booktabs rules, no vertical rules). Two approaches are supported:
+Mirror of `.claude/rules/content-standards.md` Section 1 for the coder. If the two ever differ, `content-standards.md` wins.
 
-- **tabularray (`tblr` / `talltblr`)** -- modern key-value interface. Preferred for hand-written tables in `main.tex`.
-- **`tabular` + `booktabs` + `threeparttable`** -- traditional stack. Required for R/Python/Julia-generated output (scripts export bare `tabular`).
+**Target:** APA 7 tables (*Publication Manual*, §7.8–7.21): horizontal booktabs rules only, number and title above, notes below. The paper uses `tabular` + `booktabs` + `threeparttable` inside the `apa7` class, which formats the caption (bold "Table 1", italic title on the next line) automatically.
 
-Journal-specific conventions (significance stars, note format) adapt to the target journal -- see journal-profiles.md.
-
----
+Journal-specific conventions (asterisks, float placement) adapt to the target journal — see journal-profiles.md. Statistical reporting rules are in INV-4.
 
 ## No In-Table Titles or Notes
 
 - **Never** embed titles inside the table body or as a table header row
 - **Never** embed notes, sources, or footnotes inside the table itself
-- Table numbering, titles, and notes are added in LaTeX via `\caption{}` and `\begin{tablenotes}` (or tabularray's `note{}` key)
+- Number and title come from `\caption{}` (placed first); notes from `\begin{tablenotes}` below the tabular
 - The file name and folder identify what the table contains
 
----
+## APA Table Layout
 
-## Three-Line Format (Booktabs)
+Exactly three horizontal rules plus optional `\cmidrule` spanners, and **zero vertical lines**:
 
-Every table uses exactly three horizontal rules and **zero vertical lines**:
-
-**Traditional (R/Python/Julia output):**
 ```latex
-\begin{table}[htbp]
-\centering
+\begin{table}[tbp]
 \begin{threeparttable}
-\caption{Effect of X on Y}\label{tab:main}
-\begin{tabular}{lcccc}
-\toprule
-            & (1)     & (2)     & (3)     & (4)     \\
-\midrule
-...coefficients...
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\small
-\item \textit{Notes:} Standard errors in parentheses.
+\caption{Multilevel Model Predicting Posttest Science Achievement}
+\label{tab:main}
+\input{tables/estimation/reg_main_specification.tex}
+\begin{tablenotes}[para, flushleft]
+{\small
+\textit{Note.} $N = 1{,}204$ students in 48 classrooms. Estimates are unstandardized
+fixed effects from a two-level random-intercept model; standardized estimates
+($\beta$) use the pooled posttest standard deviation. CI = confidence interval.
+}
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 ```
 
-**Modern (hand-written in main.tex):**
-```latex
-\begin{talltblr}[
-  caption = {Effect of X on Y},
-  label = {tab:main},
-  note{*} = {Standard errors in parentheses.},
-]{colspec = {lcccc}, rowsep = 4pt}
-\toprule
-            & (1)     & (2)     & (3)     & (4)     \\
-\midrule
-...coefficients...
-\bottomrule
-\end{talltblr}
+- `\toprule` above column headers, `\midrule` below them, `\bottomrule` at the end
+- `\cmidrule(lr){2-4}` for spanners over column groups
+- Note order: general note (`\textit{Note.}`), then specific notes (superscript lowercase letters, `\textsuperscript{a}`), then probability note
+- **Never** `\hline`, `|` in column specs, shading, or cell borders
+
+## Statistical Reporting in Tables
+
+| Element | APA convention |
+|---------|----------------|
+| Column heads | Italicized statistical symbols: *M*, *SD*, *n*, *b*, *SE*, $\beta$, *t*, *p*, *d*, *r*, *F*, $\eta^2_p$ |
+| Confidence intervals | Brackets, lower and upper limits: [0.12, 0.45]; or separate *LL* / *UL* columns under a "95% CI" spanner |
+| Decimals | Two decimals by default; three for *p* values; consistent within a column |
+| Leading zeros | Omit for values that cannot exceed 1 (*p*, *r*, $R^2$, $\alpha$, $\omega$, proportions): .45, not 0.45 |
+| *p* values | Exact (.031); "< .001" below .001; never .000 |
+| Asterisks | Only if the journal profile permits. Then define every symbol in a probability note: `\textsuperscript{*}$p < .05$. \textsuperscript{**}$p < .01$. \textsuperscript{***}$p < .001$.` Prefer an exact *p* column. |
+| Nested data | State levels and counts in the note (students, classrooms, schools); report variance components / ICC |
+| Sample size | In the note, and per column if *n* varies |
+
+Example rows (unstandardized estimate, SE, CI, standardized estimate, exact *p*):
 ```
-
-- `\toprule` above column headers
-- `\midrule` below column headers (and to separate panels)
-- `\bottomrule` at the very end
-- `\cmidrule(lr){2-4}` for partial rules spanning column groups
-- **R/Python/Julia output:** wrap with `threeparttable` for notes via `\begin{tablenotes}`
-- **Hand-written tables:** prefer `talltblr` with `note{}` keys -- unifies caption, label, and notes
-- **Never** use `\hline`, `|`, or any vertical rules
-
----
-
-## Coefficient Display
-
-- Point estimates on one row, standard errors in parentheses on the row below
-- Standard errors labeled in the table note (e.g., "Robust standard errors in parentheses" or "Clustered at municipality level")
-
-**Significance reporting depends on the target journal:**
-
-| Context | Convention |
-|---------|-----------|
-| **Working papers (default)** | Stars: `*` p < 0.10, `**` p < 0.05, `***` p < 0.01. Note at bottom: `\textit{Notes:} * p < 0.10, ** p < 0.05, *** p < 0.01` |
-| **AEA journals** (AER, AEJ:Applied, AEJ:Policy, AER:Insights) | No significance stars. Report standard errors in parentheses. Use exact p-values or confidence intervals for key results. |
-| **All other journals** | Stars acceptable. Follow journal-specific conventions in journal-profiles.md. |
-
-Working paper default example:
+Treatment          & 0.21 & 0.07 & [0.07, 0.35] & .18 & .004 \\
+Pretest            & 0.62 & 0.04 & [0.54, 0.70] & .59 & < .001 \\
 ```
-Treatment        & 0.045**  & 0.038*   & 0.052*** \\
-                 & (0.021)  & (0.020)  & (0.019)  \\
-```
-
-AEA journal example:
-```
-Treatment        & 0.045    & 0.038    & 0.052    \\
-                 & (0.021)  & (0.020)  & (0.019)  \\
-```
-
----
 
 ## Column and Row Structure
 
-- **Column (1), (2), ...** headers in the first row after `\toprule`
-- **Dependent variable** stated in a spanning header or the first subheader row
-- **Variable names** left-aligned, human-readable (not raw R variable names)
-  - `Log wages` not `ln_wage_deflated`
-  - `Female` not `sex_2`
-  - `Years of education` not `educ_yrs`
-- **Numeric columns** right-aligned or decimal-aligned
-- **N**, **R-squared**, **Fixed effects** (Yes/No), **Controls** (Yes/No) at the bottom before `\bottomrule`
-
----
-
-## Panel Structure
-
-For tables with multiple panels:
-
-```latex
-\multicolumn{5}{l}{\textit{Panel A: Full sample}} \\
-\midrule
-...
-\\[0.5em]
-\multicolumn{5}{l}{\textit{Panel B: Male workers}} \\
-\midrule
-...
-```
-
-- Panel labels in italics, left-aligned, spanning all columns
-- `\midrule` after each panel label
-- Small vertical space (`\\[0.5em]`) between panels
-
----
+- **Variable names** human-readable, not raw code names: `Pretest science score` not `pre_sci_z`; `Female` not `sex_2`
+- **Numeric columns** decimal-aligned (`siunitx` `S` columns) or centered
+- Model-fit rows at the bottom: *N* (and clusters), $R^2$ or marginal/conditional $R^2$, ICC, AIC/BIC, or $\chi^2$, CFI, TLI, RMSEA [90% CI], SRMR for latent variable models
+- Panel labels (`\multicolumn{k}{l}{\textit{Panel A: Grade 6}}`) are fine for multi-outcome tables
 
 ## Preferred R Packages
 
-**Primary: `modelsummary`**
+**Model tables: `modelsummary`** (bare tabular, no stars by default)
 
 ```r
 library(modelsummary)
 
 modelsummary(
   models,
-  output   = "latex_tabular",  # bare tabular, no wrapper
-  stars    = c("*" = 0.10, "**" = 0.05, "***" = 0.01),  # set FALSE for AEA journals
-  coef_rename = c(
-    "treatment"  = "Treatment",
-    "log_income" = "Log income"
-  ),
-  gof_map = c("nobs", "r.squared", "adj.r.squared"),
-  escape  = FALSE
+  output    = "latex_tabular",            # bare tabular, no wrapper
+  statistic = c("std.error", "conf.int"),
+  conf_level = 0.95,
+  stars     = FALSE,                      # APA default; set per journal profile
+  fmt       = 2,
+  coef_rename = c("treatment" = "Treatment", "pretest" = "Pretest"),
+  gof_map   = c("nobs", "r2.marginal", "r2.conditional", "icc"),
+  escape    = FALSE
 )
 ```
 
-**Alternative: `fixest::etable`**
+**In-text statistics strings: `papaja::apa_print()`** — produces APA-formatted strings (*t*(48) = 2.31, *p* = .025, *d* = 0.66, 95% CI [0.08, 1.23]) from model objects. Write them to `quality_reports/results_summary.md` so the writer copies numbers rather than retyping them (INV-11, INV-22).
 
-```r
-fixest::etable(
-  models,
-  tex      = TRUE,
-  style.tex = style.tex(
-    main     = "aer",
-    depvar.title = "",
-    fixef.title  = "",
-    yesNo    = c("Yes", "No")
-  ),
-  se.below = TRUE,
-  signif.code = c("***" = 0.01, "**" = 0.05, "*" = 0.10)  # omit for AEA journals
-)
-```
+**Effect sizes: `effectsize`** (Cohen's *d*, Hedges' *g*, $\eta^2_p$, $\omega^2$ with CIs). **Descriptives/correlation matrices:** `apaTables` or `modelsummary::datasummary_correlation()`. **Latent variable models:** `lavaan` + `semTools` (fit indices, invariance tests, $\omega$ reliability).
 
-**For summary / descriptive tables: `kableExtra`**
+**Descriptive tables: `kableExtra`**
 
 ```r
 library(kableExtra)
 
 kbl(df, format = "latex", booktabs = TRUE, escape = FALSE,
-    align = c("l", rep("c", ncol(df) - 1))) |>
-  kable_styling(latex_options = "hold_position")
+    align = c("l", rep("c", ncol(df) - 1)))
 ```
-
----
 
 ## Typography
 
-- Serif font throughout (inherits from document class -- no extra commands needed)
-- `\small` or `\footnotesize` for tables that need to fit within column width
-- Variable names in plain text, panel labels in `\textit{}`
-- Never bold table body content; bold only for rare emphasis in headers
-
----
+- Body font inherits from the class — no extra commands
+- `\small` acceptable inside tables when needed; use `landscape` for wide tables rather than going below `\small`
+- Statistical symbols italic (Greek letters upright as typeset in math mode)
+- Never bold table body content
 
 ## Export
 
 ```r
 # Write .tex fragment (no \begin{table} wrapper -- added in main.tex)
-writeLines(tex_output, here("paper", "tables", "reg_main_specification.tex"))
+writeLines(tex_output, file.path("paper/tables", "reg_main_specification.tex"))
 ```
 
-- Output **bare `tabular` environment** (no `\begin{table}` float)
-- The paper's `main.tex` wraps it with `\begin{table}`, `\caption{}`, and `\input{}`
+- Output a **bare `tabular` environment** (no `\begin{table}` float, caption, or notes)
+- `main.tex` wraps it with `\begin{table}`, `\caption{}`, `threeparttable`, and notes
 - Write to `paper/tables/`
-
----
 
 ## File Naming
 
 ```
 tables/
-  descriptive/
-    sumstats_main_sample.tex
-    balance_treatment_control.tex
-  estimation/
-    reg_main_specification.tex
-    reg_heterogeneity_gender.tex
-    did_event_study_coefficients.tex
-  robustness/
-    reg_alternative_controls.tex
+├── descriptive/
+│   ├── sumstats_correlations.tex
+│   └── balance_baseline_equivalence.tex
+├── measurement/
+│   ├── cfa_fit_indices.tex
+│   └── invariance_by_grade.tex
+├── estimation/
+│   ├── reg_main_specification.tex
+│   └── mlm_moderation_prior_achievement.tex
+└── robustness/
+    └── reg_alternative_missing_data.tex
 ```
 
 Pattern: `{table_type}_{content_description}.tex`
 
-- `sumstats_` for summary statistics
-- `balance_` for balance / pre-treatment tests
-- `reg_` for regression output
-- `did_` for difference-in-differences specific tables
-- `first_stage_` for IV first stage
-
----
-
-## Table Type Templates
-
-Use these as defaults. Adapt columns based on the paper's needs.
-
-**Descriptive Statistics:**
-```
-\toprule
-                        &  Mean   &  SD     \\
-\midrule
-\multicolumn{3}{l}{\textit{Continuous variables}} \\
-\quad Wages (USD)       &  45,230 &  12,400 \\
-\quad Years of education&  13.2   &  2.8    \\
-\quad Age               &  38.5   &  11.2   \\
-\\[0.5em]
-\multicolumn{3}{l}{\textit{Categorical variables (\%)}} \\
-\quad Female            &  48.2   &         \\
-\quad College degree    &  32.5   &         \\
-\bottomrule
-```
-- Default: Mean and SD in separate columns (never stacked with parentheses)
-- Categorical/binary: percentage in Mean column, SD blank
-- Sample size stated once in table notes, not as a column
-- Add Min/Max only when the range is substantively important
-
-**Regression Results:**
-```
-\toprule
-                        &  (1)    &  (2)    &  (3)    &  (4)    \\
-                        &  OLS    &  OLS    &  IV     &  IV     \\
-\midrule
-Treatment               &  0.045**&  0.038* &  0.052**&  0.041* \\
-                        & (0.021) & (0.020) & (0.025) & (0.022) \\
-\midrule
-Controls                &  No     &  Yes    &  No     &  Yes    \\
-Fixed Effects           &  No     &  Yes    &  No     &  Yes    \\
-Observations            &  10,000 &  10,000 &  10,000 &  10,000 \\
-R$^2$                   &  0.05   &  0.12   &         &         \\
-\bottomrule
-```
-
-**Multi-Outcome (Panel Structure):**
-```
-\toprule
-                        &  (1)    &  (2)    &  (3)    &  (4)    \\
-\midrule
-\multicolumn{5}{l}{\textit{Panel A: Wages}} \\
-\midrule
-Treatment               &  0.045**&  0.038* &  0.052**&  0.041* \\
-                        & (0.021) & (0.020) & (0.025) & (0.022) \\
-\\[0.5em]
-\multicolumn{5}{l}{\textit{Panel B: Employment}} \\
-\midrule
-Treatment               &  0.021  &  0.033* &  0.015  &  0.028  \\
-                        & (0.018) & (0.017) & (0.020) & (0.019) \\
-\midrule
-Controls                &  No     &  Yes    &  No     &  Yes    \\
-Fixed Effects           &  No     &  Yes    &  No     &  Yes    \\
-Observations            &  10,000 &  10,000 &  10,000 &  10,000 \\
-\bottomrule
-```
-
-**Balance Table:**
-```
-\toprule
-Variable                &  Treatment &  Control &  Difference &  SE     &  p-value \\
-\midrule
-Wages (USD)             &  45,800    &  44,650  &  1,150      &  (890)  &  0.197   \\
-Years of education      &  13.4      &  13.1    &  0.3        &  (0.2)  &  0.134   \\
-Female (\%)             &  47.8      &  48.6    &  -0.8       &  (1.2)  &  0.505   \\
-\bottomrule
-```
-
-**Robustness:**
-```
-\toprule
-                        &  (1)        &  (2)           &  (3)          &  (4)            \\
-                        &  Baseline   &  Alt. controls &  Alt. sample  &  Alt. estimator \\
-\midrule
-```
-- Column headers describe what changes across specifications
-- Same outcome variable across all columns
-
----
+- `sumstats_` descriptives and correlations; `balance_` baseline equivalence; `cfa_` / `invariance_` measurement models
+- `reg_` / `mlm_` / `sem_` model output; `anova_` ANOVA tables; `meta_` meta-analytic summaries
 
 ## Prohibited Patterns
 
 | Pattern | Reason |
 |---------|--------|
-| Title row inside the table | Titles go in `\caption{}`, not the table body |
-| Notes embedded in table body | Notes go below via `\begin{tablenotes}` |
-| `\hline` | Use `\toprule` / `\midrule` / `\bottomrule` (booktabs) |
-| Vertical rules (`\|` in column spec) | Never used in economics journals |
-| `stargazer` package | Deprecated workflow; use `modelsummary` or `fixest::etable` |
+| Title row inside the table | Titles go in `\caption{}` |
+| Notes embedded in table body | Notes go below via `tablenotes` |
+| Caption after the tabular | APA places number and title above |
+| `\hline` / vertical rules | booktabs horizontal rules only |
+| "*p* = .000" or "n.s." without statistics | Report exact *p* (or < .001) and the statistic |
+| Leading zero on bounded statistics (0.45 for *r*) | APA 7 §6.36 |
+| Asterisks without a probability note | Every symbol must be defined |
+| `stargazer` | Deprecated workflow; use `modelsummary` |
 | Raw variable names in labels | Human-readable labels required |
-| `xtable` without booktabs | Produces non-journal-quality output |
-| `\begin{table}` in R output | R exports bare `tabular`; float wrapper lives in `main.tex` |
+| `\begin{table}` in R output | Float wrapper lives in `main.tex` (INV-13) |
+
+## Table Type Templates
+
+Adapt columns to the paper's needs.
+
+**Descriptive Statistics and Correlations** (the standard first table in psychology/education):
+```
+\toprule
+Variable                 & \textit{M} & \textit{SD} & 1     & 2     & 3     \\
+\midrule
+1. Pretest achievement   & 48.2 & 9.6  & (.91) &       &       \\
+2. Self-efficacy         & 3.42 & 0.71 & .38   & (.87) &       \\
+3. Posttest achievement  & 52.7 & 10.1 & .64   & .41   & (.92) \\
+\bottomrule
+```
+- Reliabilities ($\omega$ or $\alpha$, say which) in parentheses on the diagonal, explained in the note
+- Correlations without leading zeros; state *N* and how missing data were handled in the note
+- Binary variables: percentage in the *M* column, *SD* blank, noted
+
+**Regression / Multilevel Model Results:**
+```
+\toprule
+                 &      &       &                & \multicolumn{2}{c}{Standardized} \\
+\cmidrule(lr){5-6}
+Predictor        & \textit{b} & \textit{SE} & 95\% CI       & $\beta$ & \textit{p} \\
+\midrule
+\multicolumn{6}{l}{\textit{Fixed effects}} \\
+Intercept        & 50.12 & 0.88 & [48.39, 51.85] &        & < .001 \\
+Treatment        & 1.94  & 0.65 & [0.67, 3.21]   & .19    & .003   \\
+Pretest          & 0.61  & 0.04 & [0.53, 0.69]   & .58    & < .001 \\
+\midrule
+\multicolumn{6}{l}{\textit{Random effects}} \\
+Classroom intercept variance & 4.21 & & & & \\
+Residual variance            & 52.80 & & & & \\
+\midrule
+ICC              & .07 & & & & \\
+\bottomrule
+```
+
+**ANOVA:**
+```
+\toprule
+Source               & \textit{df} & \textit{F} & \textit{p} & $\eta^2_p$ & 95\% CI     \\
+\midrule
+Condition            & 2, 117 & 4.56 & .012 & .07 & [.01, .15] \\
+Time                 & 1, 117 & 21.40 & < .001 & .15 & [.06, .26] \\
+Condition $\times$ Time & 2, 117 & 3.12 & .048 & .05 & [.00, .12] \\
+\bottomrule
+```
+
+**Baseline Equivalence** (randomized and quasi-experimental studies; WWC convention):
+```
+\toprule
+Variable           & \multicolumn{2}{c}{Treatment} & \multicolumn{2}{c}{Comparison} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+                   & \textit{M} & \textit{SD} & \textit{M} & \textit{SD} & Hedges' \textit{g} \\
+\midrule
+Pretest            & 48.6 & 9.4 & 47.9 & 9.8 & 0.07 \\
+Free/reduced lunch (\%) & 41.2 & & 43.5 & & -0.05 \\
+\bottomrule
+```
+- Report standardized differences; |*g*| > 0.25 fails WWC baseline equivalence, 0.05–0.25 requires statistical adjustment
+
+**Measurement Model Fit / Invariance:**
+```
+\toprule
+Model        & $\chi^2$ & \textit{df} & CFI & TLI & RMSEA [90\% CI]  & SRMR & $\Delta$CFI \\
+\midrule
+Configural   & 312.4 & 164 & .962 & .956 & .047 [.039, .055] & .041 & --    \\
+Metric       & 330.9 & 176 & .960 & .957 & .046 [.038, .054] & .049 & -.002 \\
+Scalar       & 371.2 & 188 & .952 & .951 & .049 [.042, .057] & .053 & -.008 \\
+\bottomrule
+```

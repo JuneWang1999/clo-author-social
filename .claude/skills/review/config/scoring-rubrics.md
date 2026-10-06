@@ -11,12 +11,14 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 | Issue | Deduction |
 |-------|-----------|
 | Paper doesn't compile | -20 |
-| Causal language without identification (INV-8) | -20 |
+| Causal language without a causal design (INV-8) -- incl. causal mediation claims from cross-sectional data | -20 |
 | No claim-source map (INV-22) | -15 |
 | Numbers in text don't match tables (INV-11) | -10 per, max -30 |
 | Strategy section misrepresents the actual design | -15 |
 | Missing table notes on any table (INV-1) | -5 per, max -15 |
 | Missing figure notes on any figure (INV-2) | -5 per, max -15 |
+| Nested data analyzed as independent observations | -10 |
+| Method missing JARS elements (INV-23) | -5 per, max -15 |
 
 ### Major (quality)
 
@@ -24,11 +26,13 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 |-------|-----------|
 | Voice tone mismatch (when style guide exists) | -10 |
 | AI vocabulary (3+ instances) | -2 per, max -10 |
-| Missing JEL codes or keywords (INV-6) | -5 |
+| Missing keywords, or JEL codes present (INV-6) | -5 |
+| Statistics not in APA form: missing effect sizes/CIs, inexact *p*, leading zeros (INV-4) | -2 per, max -10 |
+| Null result interpreted as "no effect" without equivalence/Bayesian/CI argument | -3 per |
 | Claim-source map entries missing | -5 per, max -20 |
 | Broken links in claim-source map | -10 per |
 | Sentence length median off by >5 words | -5 |
-| Wrong document class or formatting | -5 |
+| Not `apa7` `man` mode, or layout packages overriding the class | -5 |
 | Uniform sentence length (no variation) | -5 |
 
 ### Minor (polish)
@@ -41,6 +45,10 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 | Rule of three | -3 |
 | Paragraph openings don't match style guide | -3 per, max -9 |
 | Unresolved references | -3 per |
+| `\citet`/`\citep` or hand-typed citations | -1 per, max -5 |
+| Caption below table/figure (APA: above) | -2 per, max -6 |
+| Biased or imprecise language about people (INV-24) | -2 per, max -6 |
+| Economics-style roadmap paragraph | -2 |
 | Overfull hbox warnings | -1 per, max -5 |
 
 ---

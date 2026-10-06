@@ -109,7 +109,7 @@ Extracted from `coder-critic.md`. Used by the coder-critic agent for code review
 - Bare `tabular` output (no `\begin{table}` wrapper)
 - Three-line format: `\toprule`, `\midrule`, `\bottomrule`
 - Human-readable variable labels
-- Significance stars match project standard (or disabled for AEA journals)
+- Table statistics follow APA (INV-4): exact *p*, effect sizes with 95% CIs, no stars unless the journal profile allows them
 - Standard errors labeled in notes
 
 ### 13. RDS/Checkpoint Pattern
