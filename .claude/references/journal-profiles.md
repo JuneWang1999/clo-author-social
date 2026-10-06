@@ -16,7 +16,7 @@ When `/review --peer [journal]` is invoked:
 2. **Editor selects referees** → draws dispositions and pet peeves from the journal's **Referee pool**
 3. **Profile found below** → referees calibrate using the full profile
 4. **Profile NOT found** → referees use the journal name + .claude/references/domain-profile.md to adapt (still better than generic)
-5. **No journal specified** → generic top-field referee behavior
+5. **No journal specified** → generic top-field APA (psychology/education) referee behavior
 
 ### Referee Pool Field
 
@@ -24,9 +24,185 @@ Each journal profile includes a **Referee pool** that weights which dispositions
 
 ### Table Format Convention
 
-**Default:** All journals use standard economics table conventions — significance stars (`*` p<0.10, `**` p<0.05, `***` p<0.01), standard errors in parentheses, booktabs formatting. This default applies unless a journal profile below includes a **Table format** override.
+**Default (this fork): APA 7.** Tables and statistics follow APA style — exact *p* values, effect sizes with 95% CIs, no leading zeros on bounded statistics, booktabs horizontal rules, notes beginning with *Note.* (see INV-4 and content-standards.md). Asterisks are permitted by APA when defined in a probability note, but the default is an exact-*p* column. A journal profile below overrides this only when it includes a **Table format** line.
 
-**Exception — AEA journals** (AER, AEJ:Applied, AEJ:Policy, AER:Insights): No significance stars. Report standard errors in parentheses; use exact p-values or confidence intervals for key results. See the [AEA Style Guide](https://www.aeaweb.org/journals/aeri/style-guide) and content-standards.md for implementation details.
+**Economics, finance, and other non-APA journals** keep their own conventions: stars (`*` p<0.10, `**` p<0.05, `***` p<0.01) and standard errors in parentheses are the default there; AEA journals (AER, AEJ:Applied, AEJ:Policy, AER:Insights) use no stars and report standard errors with exact p-values or confidence intervals ([AEA Style Guide](https://www.aeaweb.org/journals/aeri/style-guide)). Submitting to one of these also means leaving the APA manuscript format — check the journal's author guidelines.
+
+### Dispositions in Psychology and Education
+
+The six dispositions keep their IDs; in psychology/education they read as follows (see `review/templates/disposition-pool.md`): **STRUCTURAL** = latent-variable / SEM modeler; **CREDIBILITY** = causal-inference and open-science referee (randomization, preregistration, power); **MEASUREMENT** = psychometrician (validity, reliability, invariance); **POLICY** = practice- and policy-relevance referee (effect sizes that matter for schools, generalizability); **THEORY** = theory-first psychologist (mechanism, competing theories); **SKEPTIC** = replication skeptic (researcher degrees of freedom, *p*-curve, effect too large).
+
+---
+
+## Psychology
+
+**Journal-specific limits (word counts, abstract length, required statements) change often — the referee calibrates to culture; the writer checks the current author guidelines before submission.**
+
+**General Interest**
+
+### Psychological Science (PS)
+**Focus:** All areas of psychology — empirical reports of broad interest (Association for Psychological Science)
+**Bar:** A finding of wide theoretical significance, demonstrated with strong, transparent evidence in a short format. Novelty alone is not enough; the evidence must be convincing to researchers outside the subfield.
+**Domain referee adjusts:** "Why should psychologists outside this area care?" Contribution must be stated in a sentence. Theoretical significance over incremental extension. Expects a clear statement of relevance and constraints on generality.
+**Methods referee adjusts:** Transparency is central — preregistration valued, open data/materials expected or explained, sample-size justification required. Effect sizes with CIs throughout. Skeptical of single small-sample studies with *p* just under .05; direct replication or large-N evidence preferred. Strict word limits mean supplementary materials carry robustness detail.
+**Typical concerns:** "Is the sample large enough to trust this effect?" "Was this preregistered, and were there deviations?" "Does it replicate?" "Are the claims broader than the evidence?"
+**Referee pool:** CREDIBILITY (high), SKEPTIC (high), THEORY (medium), MEASUREMENT (medium), POLICY (low), STRUCTURAL (low)
+
+### Nature Human Behaviour (NHB)
+**Focus:** Human behavior across psychology, economics, neuroscience, and social science — high-impact, interdisciplinary
+**Bar:** Big question, large or multi-site evidence, policy- or society-relevant implications. Registered Reports accepted.
+**Domain referee adjusts:** Interdisciplinary relevance; contribution must matter beyond psychology. Societal stakes valued.
+**Methods referee adjusts:** Large samples, multi-country or multi-site data, robustness across analytic choices (multiverse/specification curve). Reporting summary and code availability required. Causal claims scrutinized.
+**Typical concerns:** "Does this generalize beyond the sample?" "Is the effect robust to analytic choices?" "Why is this important outside one discipline?"
+**Referee pool:** CREDIBILITY (high), POLICY (high), SKEPTIC (medium), THEORY (medium), MEASUREMENT (low), STRUCTURAL (low)
+**Table format:** Nature-family style, not APA — exact *p* values and effect sizes still required; check the journal's formatting guide.
+
+**Top Field**
+
+### Journal of Personality and Social Psychology (JPSP)
+**Focus:** Social and personality psychology — three sections: Attitudes and Social Cognition; Interpersonal Relations and Group Processes; Personality Processes and Individual Differences (APA)
+**Bar:** Substantial theoretical advance, usually supported by a multi-study package (several studies converging on the claim, often including a replication and a boundary-condition test).
+**Domain referee adjusts:** Theory development is the core contribution. Competing theoretical accounts must be ruled out. Integrative literature review expected.
+**Methods referee adjusts:** Multiple studies with consistent effects; internal meta-analysis across studies welcomed. Power for each study. Measurement validity of personality and attitude constructs. Mediation claims scrutinized for design (experimental-causal-chain designs preferred to cross-sectional mediation).
+**Typical concerns:** "Is the theory new, or a relabeling of an existing construct (jingle-jangle)?" "Why these studies — would a single well-powered study be stronger?" "Is the mediator manipulated or only measured?"
+**Referee pool:** THEORY (high), CREDIBILITY (high), MEASUREMENT (medium), SKEPTIC (medium), STRUCTURAL (low), POLICY (low)
+
+### Journal of Experimental Psychology: General (JEP:General)
+**Focus:** Experimental psychology of broad interest — cognition, perception, learning, memory, decision making, emotion (APA)
+**Bar:** Experimental work with implications across areas of experimental psychology, not a single paradigm.
+**Domain referee adjusts:** Breadth: does the finding inform theory beyond the paradigm? Computational or formal models valued.
+**Methods referee adjusts:** Tight experimental control, counterbalancing, within-subject designs analyzed with participants and items as random effects (mixed models), preregistration, adequate trial counts. Model comparison for computational accounts.
+**Typical concerns:** "Is this paradigm-specific?" "Are items treated as fixed when they should be random?" "Does the computational model outperform simpler alternatives?"
+**Referee pool:** THEORY (high), CREDIBILITY (high), STRUCTURAL (medium), SKEPTIC (medium), MEASUREMENT (low), POLICY (low)
+
+### Developmental Psychology (DP)
+**Focus:** Development across the lifespan — cognitive, social, emotional, biological (APA)
+**Bar:** Developmental insight: how and why change occurs, not only age differences.
+**Domain referee adjusts:** Developmental mechanism and timing. Diverse and well-described samples; constraints on generality. Ecological context (family, school, culture).
+**Methods referee adjusts:** Longitudinal designs preferred to cross-sectional age comparisons. Within- vs. between-person separation (RI-CLPM, multilevel growth models). Measurement invariance across ages. Attrition and missing data handling.
+**Typical concerns:** "Is this an age difference or development?" "Is the measure equivalent across ages?" "Are within-person processes separated from between-person differences?"
+**Referee pool:** MEASUREMENT (high), STRUCTURAL (high), THEORY (medium), CREDIBILITY (medium), POLICY (low), SKEPTIC (low)
+
+### Child Development (CD)
+**Focus:** Child and adolescent development — interdisciplinary (Society for Research in Child Development)
+**Bar:** Significant contribution to understanding development, with attention to diverse populations and context.
+**Domain referee adjusts:** Sample diversity and description are scrutinized; the journal emphasizes representation and equity. Policy and practice implications for children and families valued.
+**Methods referee adjusts:** Longitudinal and multi-informant designs. Multilevel modeling for nested data (children in classrooms, families). Measurement invariance across groups. Open-science practices encouraged.
+**Typical concerns:** "Who is in the sample, and to whom does this generalize?" "Is the measure valid across cultural groups?" "Single-informant bias?"
+**Referee pool:** MEASUREMENT (high), POLICY (medium), CREDIBILITY (medium), STRUCTURAL (medium), THEORY (medium), SKEPTIC (low)
+
+### Psychological Methods (PM)
+**Focus:** Quantitative and research methods for psychology — new methods, evaluations of existing methods, tutorials (APA)
+**Bar:** A methodological contribution useful to substantive researchers: new estimator, critique, or synthesis, with evidence of performance.
+**Domain referee adjusts:** Relevance to applied psychologists; worked empirical example expected; accessible exposition.
+**Methods referee adjusts:** Formal derivations where claimed; Monte Carlo simulations with realistic conditions, sufficient replications, and reported Monte Carlo error; comparison to existing methods; software/code provided.
+**Typical concerns:** "Do the simulation conditions reflect real data?" "How does this compare with the existing approach?" "Can practitioners implement it?"
+**Referee pool:** STRUCTURAL (high), THEORY (high), MEASUREMENT (medium), SKEPTIC (medium), CREDIBILITY (low), POLICY (low)
+
+### Psychological Bulletin (PB)
+**Focus:** Integrative reviews and meta-analyses in psychology (APA)
+**Bar:** Comprehensive synthesis that resolves or reframes a literature.
+**Domain referee adjusts:** Complete, theory-driven coverage; clear moderator hypotheses; implications for theory.
+**Methods referee adjusts:** PRISMA reporting; preregistered protocol; dependent effect sizes handled (multilevel / RVE); heterogeneity and prediction intervals; publication-bias sensitivity (selection models, PET-PEESE); risk-of-bias coding with reliability.
+**Typical concerns:** "Is the search complete, including grey literature?" "How were dependent effect sizes handled?" "How sensitive are conclusions to publication bias?"
+**Referee pool:** MEASUREMENT (high), SKEPTIC (high), THEORY (medium), CREDIBILITY (medium), STRUCTURAL (low), POLICY (low)
+
+### Advances in Methods and Practices in Psychological Science (AMPPS)
+**Focus:** Research methods, metascience, tutorials, Registered Replication Reports (APS)
+**Bar:** Practical improvement to how psychologists do research.
+**Domain referee adjusts:** Usefulness to the field; tutorials must be reproducible end to end.
+**Methods referee adjusts:** Open code and data mandatory in spirit; simulation and many-analyst designs common; transparency checklist.
+**Typical concerns:** "Will researchers actually be able to apply this?" "Is the code reproducible?"
+**Referee pool:** CREDIBILITY (high), SKEPTIC (high), MEASUREMENT (medium), STRUCTURAL (medium), THEORY (low), POLICY (low)
+
+---
+
+## Education
+
+**General Interest**
+
+### American Educational Research Journal (AERJ)
+**Focus:** Original empirical and theoretical studies in education — two sections: Social and Institutional Analysis (SIA); Teaching, Learning, and Human Development (TLHD) (AERA; APA style)
+**Bar:** Significant contribution to education research with broad relevance; quantitative, qualitative, and mixed methods all published.
+**Domain referee adjusts:** Positioning within education research (not only psychology or economics). Equity implications and context of schooling. Clear statement of why the setting matters.
+**Methods referee adjusts:** Design appropriate to the claim; multilevel modeling for nested data; causal designs for causal claims; thorough description of sample, measures, and context. Qualitative work judged on systematic data collection and analytic transparency.
+**Typical concerns:** "What does this add to education research specifically?" "Is the context described well enough to judge generalizability?" "Are causal claims warranted by the design?"
+**Referee pool:** POLICY (high), CREDIBILITY (medium), MEASUREMENT (medium), THEORY (medium), STRUCTURAL (low), SKEPTIC (low)
+
+### Educational Researcher (ER)
+**Focus:** Scholarly articles of broad significance to the education research community — features, reviews, briefs (AERA)
+**Bar:** Accessible, broadly significant work; shorter than AERJ; speaks to researchers across subfields and to policy.
+**Domain referee adjusts:** Breadth and timeliness; implications for research agendas and policy debates.
+**Methods referee adjusts:** Rigor proportional to format; transparency of data and design; no overclaiming in short reports.
+**Typical concerns:** "Why does the whole field need to read this?" "Is the claim supported in a short format?"
+**Referee pool:** POLICY (high), THEORY (medium), CREDIBILITY (medium), SKEPTIC (medium), MEASUREMENT (low), STRUCTURAL (low)
+
+### Review of Educational Research (RER)
+**Focus:** Critical, integrative reviews and meta-analyses of education research (AERA)
+**Bar:** Synthesis that changes how a literature is understood.
+**Domain referee adjusts:** Conceptual framework for the review; coverage of the education literature; implications for practice and research.
+**Methods referee adjusts:** PRISMA; preregistered protocol where possible; effect-size computation documented; dependent effect sizes (RVE); moderator analyses by study design and outcome type (researcher-made vs. standardized); publication bias.
+**Typical concerns:** "Are study quality and design features coded and tested as moderators?" "Do researcher-developed measures drive the average effect?"
+**Referee pool:** MEASUREMENT (high), SKEPTIC (medium), THEORY (medium), POLICY (medium), CREDIBILITY (medium), STRUCTURAL (low)
+
+**Top Field**
+
+### Journal of Educational Psychology (JEdP)
+**Focus:** Learning, cognition, motivation, instruction, and development in educational settings (APA)
+**Bar:** Psychologically grounded contribution to understanding learning and instruction, with rigorous quantitative evidence.
+**Domain referee adjusts:** Theory of learning or motivation must be explicit; educational relevance required (not a lab finding with an education label). Constructs distinguished from neighbors (e.g., self-efficacy vs. self-concept).
+**Methods referee adjusts:** JARS compliance; power analysis; multilevel modeling for classroom data; measurement invariance; experimental or strong quasi-experimental designs for intervention claims; preregistration valued.
+**Typical concerns:** "Is the construct distinct from existing ones?" "Is the classroom nesting modeled?" "Is the intervention effect plausible given its dosage?"
+**Referee pool:** MEASUREMENT (high), THEORY (high), CREDIBILITY (medium), STRUCTURAL (medium), POLICY (low), SKEPTIC (low)
+
+### Educational Evaluation and Policy Analysis (EEPA)
+**Focus:** Education policy and program evaluation — causal effects of policies, implementation, and resource allocation (AERA)
+**Bar:** Credible causal evidence on a policy-relevant question; strong overlap with economics of education.
+**Domain referee adjusts:** Policy relevance and institutional detail; implications for decision makers; cost and scale considerations.
+**Methods referee adjusts:** Quasi-experimental rigor at economics-journal level: RDD, DiD/CITS with modern staggered-adoption estimators, lotteries, IV. Pre-trends, placebo tests, clustering at the level of policy variation. Heterogeneity by student subgroup.
+**Typical concerns:** "What is the identifying variation?" "Are pre-trends parallel?" "Is this ITT or TOT, and which matters for policy?" "Cost-effectiveness?"
+**Referee pool:** CREDIBILITY (high), POLICY (high), SKEPTIC (medium), MEASUREMENT (medium), STRUCTURAL (low), THEORY (low)
+
+### Journal of Research on Educational Effectiveness (JREE)
+**Focus:** Causal studies of education interventions, programs, and policies; methods for effectiveness research (Society for Research on Educational Effectiveness)
+**Bar:** Rigorous impact evaluation — randomized or strong quasi-experimental designs meeting evidence standards.
+**Domain referee adjusts:** Intervention theory of change, implementation fidelity, treatment contrast with business-as-usual, cost.
+**Methods referee adjusts:** WWC-style standards: attrition (overall and differential), baseline equivalence, analysis at level of randomization, MDES and power, multiple-comparison corrections across outcome domains, effect sizes as Hedges' *g* with consistent standardizers.
+**Typical concerns:** "Would this meet WWC standards without reservations?" "Was the study powered for a realistic effect?" "What did the control group receive?" "Are outcome measures overaligned with the intervention?"
+**Referee pool:** CREDIBILITY (high), MEASUREMENT (high), SKEPTIC (medium), POLICY (medium), STRUCTURAL (low), THEORY (low)
+
+### Sociology of Education (SoE)
+**Focus:** Schooling as a social institution — stratification, inequality, organizations, school effects (American Sociological Association)
+**Bar:** Sociological theory applied to education with strong empirical evidence.
+**Domain referee adjusts:** Sociological framing (stratification, institutions, social reproduction); attention to race, class, and gender inequality.
+**Methods referee adjusts:** Nationally representative data with survey weights; multilevel models; selection bias; causal designs where causal claims are made.
+**Typical concerns:** "What is the sociological contribution?" "Are inequality mechanisms specified?" "Selection into schools?"
+**Referee pool:** THEORY (high), POLICY (medium), MEASUREMENT (medium), CREDIBILITY (medium), SKEPTIC (low), STRUCTURAL (low)
+**Table format:** ASA style, not APA — stars with probability note common; manuscript and reference format follow the ASA Style Guide.
+
+### Contemporary Educational Psychology (CEP)
+**Focus:** Educational psychology — motivation, learning, self-regulation, instruction
+**Bar:** Theory-driven quantitative or mixed-methods work advancing educational psychology.
+**Domain referee adjusts:** Motivation and self-regulation theory (expectancy-value, self-determination, achievement goals); construct clarity.
+**Methods referee adjusts:** Latent variable models, measurement invariance, longitudinal designs separating within- from between-person effects; multilevel models.
+**Typical concerns:** "Is the measurement model sound?" "Within- or between-person claim?"
+**Referee pool:** MEASUREMENT (high), THEORY (high), STRUCTURAL (medium), CREDIBILITY (medium), POLICY (low), SKEPTIC (low)
+
+### Learning and Instruction (L&I)
+**Focus:** Learning, instruction, and teaching across ages and settings (EARLI)
+**Bar:** Contribution to theory of learning and instruction with international relevance.
+**Domain referee adjusts:** Instructional design theory; transfer beyond the specific materials; international context.
+**Methods referee adjusts:** Experimental designs with appropriate controls; process data (log files, think-aloud) welcomed; multilevel models for classroom studies.
+**Typical concerns:** "Does it transfer beyond these materials?" "Is the control condition fair?"
+**Referee pool:** THEORY (high), CREDIBILITY (medium), MEASUREMENT (medium), STRUCTURAL (medium), POLICY (low), SKEPTIC (low)
+
+### AERA Open
+**Focus:** Open-access, broad-scope education research (AERA)
+**Bar:** Methodologically sound work of interest to education researchers; replications and null results welcomed.
+**Domain referee adjusts:** Soundness over novelty; clear contribution.
+**Methods referee adjusts:** Design appropriate to claims; transparency.
+**Typical concerns:** "Are the conclusions supported?" "Is the null result informative (powered, equivalence-tested)?"
+**Referee pool:** CREDIBILITY (medium), MEASUREMENT (medium), POLICY (medium), SKEPTIC (medium), THEORY (low), STRUCTURAL (low)
 
 ---
 
@@ -360,5 +536,5 @@ Copy this template and add it above this section:
 **Methods referee adjusts:** [rigor expectations, preferred methods, required checks]
 **Typical concerns:** [common referee questions at this journal]
 **Referee pool:** [disposition] (high/medium/low) for each: STRUCTURAL, CREDIBILITY, MEASUREMENT, POLICY, THEORY, SKEPTIC
-**Table format:** [optional — only include if journal deviates from default (stars OK). E.g., "No significance stars (AEA style)."]
+**Table format:** [optional — only include if journal deviates from the APA default. E.g., "ASA style" or "Nature-family style."]
 ```

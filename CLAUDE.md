@@ -1,4 +1,4 @@
-# CLAUDE.MD -- Empirical Economics Research with Claude Code
+# CLAUDE.MD -- Empirical Psychology & Education Research with Claude Code
 
 <!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
      Customize Beamer environments for your talk preamble.
@@ -7,7 +7,7 @@
 
 **Project:** [YOUR PROJECT NAME]
 **Institution:** [YOUR INSTITUTION]
-**Field:** [YOUR FIELD — Economics by default. Can be adapted to Finance, Accounting, Marketing, etc.]
+**Field:** [YOUR FIELD — Psychology / Education by default (APA 7). Narrow it in `.claude/references/domain-profile.md`; journal calibration in `.claude/references/journal-profiles.md`.]
 **Branch:** main
 
 ---

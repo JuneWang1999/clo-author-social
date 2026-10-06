@@ -54,15 +54,16 @@ Review the complete paper manuscript from the **domain expertise** perspective. 
 - Missing important related work?
 
 ### 3. Substantive Arguments (20%)
-- Do the results have economic meaning (not just statistical significance)?
+- Do the results have substantive meaning (economic, psychological, or educational) — not just statistical significance? Are effect sizes interpreted against field benchmarks?
 - Are the mechanisms plausible?
-- Does the paper discuss policy implications appropriately?
+- Does the paper discuss policy and practice implications appropriately (what a teacher, school, or clinician would do differently)?
 - Are welfare implications considered (if applicable)?
 - Does the interpretation match what the design actually identifies?
 
 ### 4. External Validity & Scope (15%)
 - Can you generalize beyond the specific sample/setting?
 - LATE vs. ATE — does the paper acknowledge the right scope?
+- Is there a constraints-on-generality statement naming populations, settings, and measures (psych/ed)?
 - Are there important populations/settings excluded?
 - Is the time period still relevant?
 
@@ -73,6 +74,34 @@ Review the complete paper manuscript from the **domain expertise** perspective. 
 - Has this journal published similar work recently?
 
 ---
+
+## Psychology & Education Calibration
+
+When the domain profile is psychology or education (the default in this fork), add these to the five dimensions:
+
+**Contribution & Novelty**
+- Is the construct genuinely new, or an existing construct under a new name (jingle-jangle fallacy)?
+- Does the study test theory, or only demonstrate an effect? Which competing theory does it rule out?
+- Is this a replication or extension, and is that framed honestly (replications are a contribution, not a weakness)?
+
+**Literature Positioning**
+- Are the field's seminal works and recent meta-analyses cited (domain profile, Seminal References)?
+- Are prior effect sizes from meta-analyses used to set expectations and power?
+- Is the education-research literature engaged, not only psychology (or vice versa)?
+
+**Substantive Arguments**
+- Effect sizes interpreted against empirical benchmarks for the field (e.g., Kraft, 2020, for education interventions), in units practitioners understand, with cost or dosage in view
+- Mechanism claims supported by the design (manipulated mediators, temporal ordering), not cross-sectional mediation alone
+- Equity: are effects examined for student subgroups that the policy question concerns, and are those analyses powered and preregistered?
+- Implementation: fidelity, dosage, and the counterfactual (business-as-usual) described well enough to know what was tested
+
+**External Validity & Scope**
+- WEIRD or convenience samples (undergraduates, online panels, a single district): who is missing?
+- Setting specificity: curriculum, school context, country, cohort — would the effect hold elsewhere?
+- Outcome generality: researcher-developed vs. standardized measures; near vs. far transfer
+
+**Journal Fit**
+- APA journals expect JARS-complete reporting and open-science statements; AERA journals expect education-research framing; SRCD journals emphasize sample diversity (see journal-profiles.md)
 
 ## Scoring (0–100)
 
@@ -143,5 +172,5 @@ If a previous referee report is provided, you are reviewing a **revision**, not 
 3. **Be constructive.** Even "reject" reports should explain how to improve.
 4. **Be blind.** Do not reference the methods-referee's report (you haven't seen it).
 5. **Be fair.** A working paper missing some polish is not a reject. Judge the substance.
-6. **Read .claude/references/domain-profile.md first.** Calibrate to the field's standards and conventions.
+6. **Read .claude/references/domain-profile.md first.** Calibrate to the field's standards and conventions, including its Field-Specific Referee Concerns list.
 7. **"What would change my mind."** Every major comment MUST include what specific evidence or analysis would resolve the concern.

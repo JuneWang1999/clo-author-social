@@ -22,6 +22,8 @@ _Always runs. This is triage._
 - **Theory + empirics** -- model predictions tested with data
 - **Descriptive / measurement** -- new data, facts, or measures
 
+**Also** identify the psych/ed design if applicable: experiment, cluster-randomized trial, quasi-experiment, longitudinal observational, mediation/moderation, psychometric, meta-analysis (see Step 2A psych/ed checks).
+
 **Then** identify the specifics:
 
 ### Reduced-form:
@@ -198,6 +200,55 @@ _Use this checklist when the paper type is Descriptive / Measurement._
 - [ ] **No causal claims without a design.** Descriptive papers use "associated with," "predicts," "correlates with" -- not "causes" or "leads to"
 - [ ] **If the paper does make causal claims:** it needs a design, and the reduced-form checklists above apply to that component
 
+### Step 2A (Psychology & Education Designs)
+
+_Run the block for each design the paper uses, in addition to (not instead of) the paper-type checks above. Field calibration: `.claude/references/domain-profile.md`._
+
+#### Randomized Experiments (lab, online, field)
+- [ ] **Randomization described:** method, unit, blocking/stratification, allocation concealment; CONSORT-style flow from enrollment to analysis
+- [ ] **Manipulation check** shows the manipulation changed the intended construct (and not a confound)
+- [ ] **Control condition** defined — active vs. passive, what business-as-usual entails; expectancy and demand effects addressed
+- [ ] **Exclusions preregistered** (attention checks, bots, duplicates) and applied blind to condition; results shown with and without exclusions
+- [ ] **ITT is primary;** per-protocol or CACE only as secondary with assumptions stated
+- [ ] **Within-subjects designs:** counterbalancing, carryover, participants and items as crossed random effects
+
+#### Cluster-Randomized Trials
+- [ ] **Analysis at the level of assignment** — multilevel model or cluster-robust SEs; students analyzed as independent = CRITICAL
+- [ ] **Number of clusters** adequate; small-cluster inference (Kenward–Roger / Satterthwaite df, wild cluster bootstrap) when clusters are few
+- [ ] **MDES** computed with realistic ICC and covariate R² (Hedges & Hedberg, 2007)
+- [ ] **Joiners/leavers** after randomization handled; no post-randomization recruitment bias
+- [ ] **Attrition** overall and differential, at both cluster and student level, against WWC thresholds
+
+#### Quasi-Experimental Designs (RDD, CITS/DiD, lotteries, matching)
+- [ ] Design-specific checks above (DiD, RDD, IV) applied to test-score cutoffs, policy rollouts, and lotteries
+- [ ] **Matching/weighting:** pretest on the same outcome included; overlap shown; baseline equivalence |g| ≤ 0.25 with adjustment when 0.05–0.25 (WWC); sensitivity to unobserved confounding (E-value or Rosenbaum bounds)
+- [ ] **Regression to the mean** addressed when units were selected on extreme pretest scores
+
+#### Longitudinal Observational Designs
+- [ ] **Within- vs. between-person** variance separated (RI-CLPM, person-mean centering, FE) when the claim is within-person
+- [ ] **Lag justified** theoretically; results not driven by an arbitrary measurement interval
+- [ ] **Measurement invariance across waves** before modeling change
+- [ ] **Language is associational** unless an identification argument is added (INV-8)
+
+#### Mediation and Moderation
+- [ ] **Temporal ordering** X → M → Y in the measurement timeline; cross-sectional mediation presented as a causal mechanism = MAJOR (CRITICAL if it is the headline claim)
+- [ ] **Causal mediation assumptions** (sequential ignorability) stated, with sensitivity analysis; mediator–outcome confounders considered even when X is randomized
+- [ ] **Indirect effect inference** via bootstrap or Monte Carlo CIs, not Sobel or causal-steps logic alone
+- [ ] **Moderators** measured before treatment; interactions probed (simple slopes, Johnson–Neyman); power for interactions acknowledged
+
+#### Measurement Validity (all designs with latent constructs)
+- [ ] **Reliability in this sample** (ω preferred) for every multi-item measure
+- [ ] **Factor structure** supported (CFA with an estimator suited to ordinal items); fit indices reported with conventional criteria
+- [ ] **Invariance** (configural → metric → scalar, or partial invariance) before comparing groups or waves
+- [ ] **Common-method variance** — single informant, single occasion, same format — acknowledged or designed out
+- [ ] **Outcome alignment** — researcher-developed measures overaligned with the intervention flagged; standardized outcome reported when available
+
+#### Meta-Analysis
+- [ ] Search reproducible (PRISMA), inclusion criteria preregistered
+- [ ] Dependent effect sizes handled (RVE or three-level model)
+- [ ] Heterogeneity reported as τ and prediction intervals, not only I²
+- [ ] Publication-bias sensitivity (selection models, PET-PEESE) and moderator tests for design features
+
 ### Step 2B: Sanity Check (MANDATORY)
 
 **Before proceeding to Phase 3, verify that results actually make sense.** This is the most important step -- it catches nonsensical results that pass all the checklist items above.
@@ -221,6 +272,12 @@ _Use this checklist when the paper type is Descriptive / Measurement._
 - [ ] **Test results coherent?** Do the empirical findings tell a consistent story across predictions?
 - [ ] **Confirmation bias check:** Are all predictions confirmed? If yes, are the tests sharp enough to reject?
 - [ ] **Magnitude of predicted effects vs. observed:** Does the model predict effects of the right order of magnitude?
+
+**Psychology / education:**
+- [ ] **Effect size plausible for the design and dosage?** Education interventions with standardized outcomes rarely exceed *d* ≈ 0.20–0.30 (Kraft, 2020); a brief online manipulation producing *d* > 0.8 needs explanation
+- [ ] **Precision vs. claim:** a "significant" effect with a CI spanning near-zero to implausibly large is weak evidence; a null with a wide CI is not evidence of no effect
+- [ ] **p-value distribution:** several key tests with *p* between .01 and .05 in small samples suggests flexibility — check against the preregistration
+- [ ] **Attrition-adjusted story:** do results survive bounds (e.g., Lee bounds) or alternative missing-data assumptions?
 
 **Descriptive / measurement:**
 - [ ] **Facts surprising or important?** If the facts confirm what everyone already knew, what's the contribution?
@@ -256,8 +313,16 @@ _Runs after Phase 2. If Phase 2 found critical issues, still review but flag tha
 - [ ] Heteroskedasticity-robust SEs: HC1 vs HC2/HC3 (small-sample correction)
 
 ### Multiple Testing
-- [ ] Bonferroni/Benjamini-Hochberg/Romano-Wolf when testing multiple outcomes
-- [ ] Stars match stated significance levels
+- [ ] Bonferroni/Holm/Benjamini-Hochberg/Romano-Wolf when testing multiple outcomes or a family of confirmatory hypotheses
+- [ ] Exact *p* values reported (APA); asterisks, if used, match the stated thresholds
+
+### Psychology / Education Inference
+- [ ] **Nesting** handled at every level of clustering (multilevel models or cluster-robust SEs); ICCs reported
+- [ ] **Small numbers of clusters:** Kenward–Roger / Satterthwaite df or wild cluster bootstrap
+- [ ] **Survey designs** (ECLS, NAEP, PISA): weights, strata/PSUs or replicate weights, plausible values combined correctly
+- [ ] **Missing data:** FIML/multiple imputation with auxiliary variables; *m* adequate; MAR assumption discussed
+- [ ] **Null claims** supported by equivalence tests (TOST with justified bounds) or Bayes factors
+- [ ] **Confirmatory vs. exploratory** separated; deviations from the preregistration disclosed with reasons
 
 ### Code-Theory Alignment (when R scripts exist)
 - [ ] Estimand in code matches paper claim (ATT vs ATE vs LATE)
@@ -347,6 +412,7 @@ _Runs only if Phases 2-3 have no unresolved CRITICAL issues. Lower priority -- a
 - [ ] Selection on unobservables: Oster bounds or similar sensitivity (reduced-form)
 - [ ] Measurement error: attenuation bias discussed if relevant
 - [ ] Sample selection: Heckman-style concerns if applicable
+- [ ] Constraints on generality (psych/ed): sample population, setting, and measures to which results should not be extended (WEIRD samples, single district, online panels)
 
 ### Citation Fidelity
 For methodological claims, verify correct citations:

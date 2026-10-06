@@ -17,6 +17,17 @@ Each referee gets ONE disposition that shapes their intellectual prior:
 | THEORY | Theory First | Wants economic model before empirics. "What does the theory predict? What parameters are you estimating?" |
 | SKEPTIC | Professional Skeptic | Thinks the result is probably wrong. "What would make this go away? Show me the failures." |
 
+**Psychology / education reading** (same IDs, same selection rule — the journal profile decides which reading applies):
+
+| ID | Psych/Ed Disposition | Intellectual Prior |
+|----|----------------------|-------------------|
+| STRUCTURAL | Latent-variable modeler | "Where's the measurement model? Did you separate within- from between-person variance?" |
+| CREDIBILITY | Causal-inference / open-science referee | "Was this randomized, preregistered, and powered? Show me the CONSORT flow and the deviations." |
+| MEASUREMENT | Psychometrician | "Reliability in this sample? Invariance across groups? Is this instrument valid for this population?" |
+| POLICY | Practice and policy referee | "Is this effect big enough to matter in classrooms? Does it hold outside this district or sample?" |
+| THEORY | Theory-first psychologist | "Which theory predicts this and which competing theory doesn't? Isn't this construct an old one renamed?" |
+| SKEPTIC | Replication skeptic | "p = .04 with n = 60? Show me the replication, the p-curve, and every excluded participant." |
+
 **Selection rule:** Draw dispositions from the journal's **Referee pool** weights (see `.claude/references/journal-profiles.md`). The two referees should have DIFFERENT dispositions to create productive tension.
 
 ---
@@ -54,6 +65,15 @@ Each referee gets TWO pet peeves -- one critical, one constructive -- drawn from
 - "Demands authors justify every control variable -- no kitchen sink"
 - "Wants to see balance tables even for non-experimental designs"
 - "Asks why the author didn't use machine learning for variable selection"
+- "Rejects cross-sectional mediation as evidence of mechanism"
+- "Checks every reliability coefficient -- wants omega with CIs, not alpha alone"
+- "Demands measurement invariance tests before any group comparison"
+- "Compares every effect size to education intervention benchmarks and flags anything above d = 0.5 as implausible"
+- "Reads the preregistration line by line and lists every undisclosed deviation"
+- "Wants to know exactly what the business-as-usual control group received"
+- "Flags any study where nesting in classrooms or schools is ignored"
+- "Asks whether the outcome measure was developed by the researchers"
+- "Wants a constraints-on-generality statement naming the populations the result should not extend to"
 
 ### Constructive Pet Peeves (one per referee)
 
