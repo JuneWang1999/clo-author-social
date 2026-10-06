@@ -1,7 +1,7 @@
 ---
 name: tools
-description: Utility commands — commit, compile, validate-bib, lint, journal, context-status, deploy, learn. Replaces individual utility skills.
-argument-hint: "[subcommand: commit | compile | validate-bib | lint | journal | context | deploy | learn | upgrade] [args]"
+description: Utility commands — commit, build, check, validate-bib, lint, journal, context-status, deploy, learn. Replaces individual utility skills.
+argument-hint: "[subcommand: commit | build | check | validate-bib | lint | journal | context | deploy | learn | upgrade] [args]"
 allowed-tools: Read,Grep,Glob,Write,Edit,Bash,Task
 ---
 
@@ -36,24 +36,29 @@ Stage changes, create commit, optionally create PR and merge.
 - Create commit with descriptive message
 - If quality score available and >= 80, note in commit
 
-### `/tools compile [file]` — LaTeX Compilation
-Automated multi-pass compilation via latexmk.
-
-For papers:
+### `/tools build [talk name]` — Build Word / PowerPoint Drafts
+Manuscript (draft phase only — never touches `paper/manuscript.docx`):
 ```bash
-cd paper && latexmk [file]
+Rscript paper/build_manuscript.R            # -> paper/drafts/manuscript_draft.docx
 ```
 
-For talks:
+Talk:
 ```bash
-cd paper/talks && latexmk [file]
+paper/talks/build_talk.sh <name>            # -> paper/talks/drafts/<name>_draft.pptx
 ```
 
-Note: `paper/latexmkrc` configures XeLaTeX, TEXINPUTS, and BIBINPUTS. Falls back to manual 3-pass if latexmk is unavailable.
+Handoffs (`--handoff`) create the Word/PowerPoint masters and only run after the user says yes. `/tools compile` is an alias for `/tools build`.
+
+### `/tools check [file.docx]` — APA Format Check (read-only)
+```bash
+python3 .claude/scripts/check_docx_format.py paper/manuscript.docx --abstract-limit 250
+.claude/scripts/docx_snapshot.sh paper/manuscript.docx
+```
+Defaults to the master if it exists, else the latest draft build.
 
 ### `/tools validate-bib` — Bibliography Validation
-Cross-reference all \cite{} keys in paper and talk files against Bibliography_base.bib.
-Report: missing entries, unused entries, duplicate keys.
+Cross-reference all citation keys in `paper/sections/*.md` and `paper/talks/*.md` (`@key`, `[@key]`) against `Bibliography_base.bib` (the Zotero export). In the Word-master phase, compare the snapshot's in-text citations with its reference list instead.
+Report: missing entries, unused entries, duplicate keys, entries without DOIs. Missing references are added in Zotero by the user, then re-exported — never hand-edit the exported .bib.
 
 ### `/tools lint [file|dir]` — Mechanical Code Linting
 Run grep-based checks on R/Python/Julia scripts against the coding standards' prohibited patterns. Catches mechanical violations before the coder-critic's judgment review.
@@ -168,6 +173,6 @@ Step 5: REPORT
 
 ## Principles
 - **Each subcommand is lightweight.** No multi-agent orchestration needed.
-- **Compile uses latexmk.** Handles multi-pass and biber automatically.
+- **Builds never overwrite masters.** Draft builds go to `drafts/`; masters are created once by `--handoff` (INV-25).
 - **validate-bib catches drift.** Run before commits to catch broken citations.
 - **Upgrade preserves content.** Infrastructure changes, your paper doesn't.

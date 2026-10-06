@@ -10,13 +10,14 @@
 - [ ] 3–5 keywords present; public significance / impact statement prepared if the journal requires one (INV-6)
 - [ ] All tables have notes (INV-1)
 - [ ] All figures have notes (INV-2)
-- [ ] No `\hline` -- booktabs only (INV-3)
+- [ ] Tables have horizontal rules only — no vertical rules or grids (INV-3)
 - [ ] Notation consistent throughout (INV-7)
 - [ ] Numbers in text match tables (INV-11)
-- [ ] Compiles cleanly with no warnings
-- [ ] biblatex-apa (`style=apa`) + `biber`, not `natbib`/`apacite` (INV-9)
-- [ ] `hyperref` second-to-last, `cleveref` after (INV-10)
-- [ ] No `Figure~\ref{}` -- use `\cref{}` throughout
+- [ ] `check_docx_format.py` reports no FAIL on `paper/manuscript.docx`
+- [ ] Every citation in the reference list and vice versa; DOIs present (INV-9)
+- [ ] Tables/figures numbered in order of first mention, all called out (INV-10)
+- [ ] Comments resolved and tracked changes accepted in the clean copy; tracked-changes copy saved separately if this is a revision
+- [ ] Word document properties (File › Properties) free of author names for masked review
 
 ## Replication Package
 - [ ] README follows AEA template

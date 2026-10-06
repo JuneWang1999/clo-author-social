@@ -20,17 +20,17 @@ Tables on slides are hard to read. Convert key results to figures. If you must s
 ## Colors
 - Use color purposefully (highlight treatment group, mark significance)
 - Red/green color blindness affects ~8% of men -- use blue/orange instead
-- Define a `result` color for highlighted findings and use it consistently
+- Define one accent color for highlighted findings in `paper/talks/reference.pptx` and use it consistently (in PowerPoint after handoff)
 
 ## Equations
 - Show the equation, but explain it in words
-- Highlight the key parameter (use `\color{}` or `\boxed{}`)
+- Highlight the key parameter (bold it in the Markdown, or color it in PowerPoint after handoff)
 - Max 2 equations per slide
 
 ## Builds
-- Use `\pause` for sequential reveals when the logical flow requires it
+- Use `::: incremental` lists for sequential reveals when the logical flow requires it
 - Don't over-animate -- most slides should appear complete
-- Use `\only<>` for equation buildup in structural model presentations
+- For equation buildup, repeat the slide with one more term each time (or animate in PowerPoint after handoff)
 
 ## Tables on Slides
 - Max 4-5 columns (fewer than the paper)

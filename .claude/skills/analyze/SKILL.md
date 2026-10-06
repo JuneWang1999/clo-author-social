@@ -61,9 +61,9 @@ Dispatch **Coder** agent:
 
 The Coder follows these principles:
 - **Script structure:** Use the Script Structure Template below
-- **Packages:** `fixest` for panel data, `modelsummary` for tables, `ggplot2` for figures
+- **Packages:** `fixest`/`lme4`/`lavaan` for models, `flextable` (via `paper/word/apa_helpers.R`) for tables, `ggplot2` for figures
 - **Standard errors:** Cluster at appropriate level (match treatment assignment)
-- **Output:** `.tex` tables for LaTeX, `.pdf`/`.png` figures, `.rds` for intermediate objects
+- **Output:** flextable tables (`.rds` + `.docx` preview) for Word, `.png` figures (300 dpi), `.rds` for intermediate objects
 - **No hardcoded paths.** All paths relative to repository root.
 - **saveRDS everything.** Every computed object (estimates, model fits, data frames, summary statistics) gets serialized to `.rds` for downstream use by the writer and other agents.
 

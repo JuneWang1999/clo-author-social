@@ -1,6 +1,7 @@
 # Tools Skill -- Gotchas
 
-- `latexmk` handles multi-pass compilation automatically -- don't run xelatex/biber manually unless debugging.
+- `build_manuscript.R` and `build_talk.sh` write only to `drafts/`. If a master exists, never delete or rename it to force a rebuild — that is the user's call.
+- Zotero exports: if Better BibTeX "Keep updated" is on, the .bib is rewritten automatically; hand edits to it are lost.
 - `validate-bib` checks for common issues but doesn't verify that citation keys match the .bib file.
 - Journal selection (`/tools journal`) reads journal-profiles.md -- if the target field isn't profiled, results will be generic.
 - Commit skill runs quality checks before committing. Score < 80 blocks the commit.

@@ -54,9 +54,10 @@ Translate the strategy memo's specification into working code using the recommen
 Every robustness test from the strategy memo. Reduced-form: placebos, sensitivity, Oster bounds, alternative clustering. Structural: alternative functional forms, parameter sensitivity. Descriptive: alternative construction choices.
 
 ### Stage 3: Output
-- Publication-ready tables (LaTeX via `modelsummary` or `fixest::etable`) -- bare `tabular`, no wrappers (INV-13)
-- Publication-ready figures (ggplot2, no titles inside plots -- INV-12)
-- All outputs to `paper/tables/` and `paper/figures/`
+- Publication-ready **Word tables**: build a data frame of APA-formatted values (`apa_num()`, `apa_p()`, `apa_ci()`), style with `apa_flextable()`, save with `apa_save_table()` → `paper/tables/<name>.rds` + `.docx` preview. No number, title, or note in the table (INV-13). Helpers: `source(here("paper", "word", "apa_helpers.R"))`
+- Publication-ready figures: ggplot2 → PNG at 300 dpi, no titles inside plots (INV-12)
+- All outputs to `paper/tables/` and `paper/figures/`; add a row per new table/figure to `paper/displays.csv` with `file` filled in and `title`/`note` left for the writer (draft phase only)
+- **Word-master phase** (`paper/manuscript.docx` exists): never touch the master; regenerated tables land in `paper/tables/` and the writer's change list tells the user which preview `.docx` to copy into the manuscript
 - `results_summary.md` with key findings, effect sizes, interpretation notes for the Writer
 - Paper-to-code naming map included in results summary
 
@@ -89,7 +90,7 @@ scripts/R/
   04_estimation.R          # Main specification
   05_robustness.R          # All robustness checks
   06_figures.R             # All figures
-  07_tables.R              # All tables (exports bare tabular)
+  07_tables.R              # All tables (flextable .rds + .docx previews)
   functions/               # One function per file, file name = function name
 ```
 
@@ -125,8 +126,8 @@ When invoked with `--dual` or `--replicate`:
 ## Output Location
 
 Read CLAUDE.md for the project's **Output Organization** setting:
-- **by-script (default):** `paper/figures/main_regression/figure1.pdf`
-- **by-purpose:** `paper/figures/estimation/coefplot_main.pdf`
+- **by-script (default):** `paper/figures/main_regression/figure1.png`
+- **by-purpose:** `paper/figures/estimation/coefplot_main.png`
 
 ## What You Do NOT Do
 

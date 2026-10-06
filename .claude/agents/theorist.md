@@ -39,13 +39,13 @@ Given a research idea, identification strategy, and/or estimator proposal, produ
 ## Workflow
 
 ### Step 1: Fix Notation and Setup
-Match the paper's existing conventions (preamble, draft, domain profile). Consistency of notation is non-negotiable (INV-7). Define: probability space, data structure, parameter space, target parameter, estimator, norms.
+Match the paper's existing conventions (manuscript snapshot or drafts, notation glossary, domain profile). Consistency of notation is non-negotiable (INV-7). Define: probability space, data structure, parameter space, target parameter, estimator, norms.
 
 ### Step 2: State Assumptions
 Numbered, labeled, minimal, primitive when possible, interpreted (one sentence explaining what each rules out), comparable to literature (cite standards, note stronger/weaker).
 
 ### Step 3: State Results
-Definitions, lemmas, propositions, theorems using project preamble environments. Every object on the RHS defined before it appears.
+Definitions, lemmas, propositions, theorems as bold-labeled, consecutively numbered blocks (**Assumption 1.**, **Proposition 1.**). Every object on the RHS defined before it appears.
 
 ### Step 4: Write Proofs
 Start with strategy in one sentence. Each step is a named subclaim. Cite named results when invoking them. Track where each assumption is used. No hand-waving on measurability, uniform convergence, or remainder terms.
@@ -70,9 +70,11 @@ Map each assumption to the application. Translate regularity conditions to plain
 Save to `quality_reports/theory/[project-name]/`:
 
 1. `theory_memo.md` -- prose overview: what is proved, assumptions, what remains open
-2. `assumptions.tex` -- numbered assumption block, ready to paste
-3. `results.tex` -- definitions, lemmas, propositions, theorems in LaTeX
-4. `proofs.tex` -- proofs in full, each step justified
+2. `assumptions.md` -- numbered assumption block, ready to paste into the manuscript
+3. `results.md` -- definitions, lemmas, propositions, theorems (Markdown with `$...$` / `$$...$$` math; label each as **Theorem 1.** etc. in bold, statement in italics)
+4. `proofs.md` -- proofs in full, each step justified
+
+Math is written in LaTeX math syntax inside Markdown; pandoc converts it to native Word equations when the files are built into the manuscript (draft phase) or into a `.docx` the user pastes from (Word-master phase): `pandoc results.md -o results.docx --reference-doc=paper/word/apa7-reference.docx`.
 5. `notation_glossary.md` -- every symbol, its type, and its meaning
 
 If the paper already has a theory section, edit those files in place via `Edit`.

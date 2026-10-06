@@ -10,7 +10,7 @@
 
 | Claim | Location | Source Script | Source Line | Table/Figure |
 |-------|----------|---------------|-------------|--------------|
-| [e.g., "4.2 pp increase"] | [results.tex:L23] | [09_estimation.R] | [L142] | [main_results.tex:col3] |
+| [e.g., "*d* = 0.45"] | [Results › Primary Outcome ¶2 (sections/results.md:L23 in drafts)] | [09_estimation.R] | [L142] | [Table 2, row Treatment (tables/reg_main_specification.rds)] |
 
 ---
 

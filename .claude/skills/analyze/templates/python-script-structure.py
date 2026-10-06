@@ -4,7 +4,7 @@ Purpose: [one sentence]
 Project: [Project Name]
 Paper: [Author (Year)], Section [X]
 Inputs: [data/cleaned/analysis_data.parquet]
-Outputs: [paper/tables/reg_main.tex, paper/figures/event_study.pdf]
+Outputs: [paper/tables/reg_main.csv, paper/figures/fig1_main.png]
 """
 
 # --- Packages ----------------------------------------------------------------
@@ -58,12 +58,13 @@ print(f"Variables: {df.shape[1]}")
 #     pickle.dump(model_fit, f)
 
 # --- Export Tables -----------------------------------------------------------
-# Export bare tabular (no \begin{table} wrapper) -- INV-13
-# with open(TABLE_DIR / "reg_main.tex", "w") as f:
-#     f.write(tex_output)
+# Export the table as CSV of APA-formatted strings (exact p, no leading zeros on
+# bounded statistics, CIs as "[0.12, 0.45]"), no number/title/note -- INV-13.
+# The Word build styles it with apa_flextable(); list it in paper/displays.csv.
+# tab.to_csv(TABLE_DIR / "reg_main.csv", index=False)
 
 # --- Export Figures ----------------------------------------------------------
-# No titles inside matplotlib/seaborn -- INV-12. Titles go in LaTeX \caption{}
-# fig.savefig(FIGURE_DIR / "fig_main.pdf", bbox_inches="tight")
+# No titles inside matplotlib/seaborn -- INV-12. Titles go in paper/displays.csv
+# fig.savefig(FIGURE_DIR / "fig1_main.png", dpi=300, bbox_inches="tight", facecolor="white")
 
 print("Script complete: [NN]_[script_name].py")

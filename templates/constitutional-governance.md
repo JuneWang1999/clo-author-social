@@ -29,7 +29,7 @@ Making this distinction explicit prevents:
 
 ### Article I: [Your Primary Artifact Principle]
 
-**Example (LaTeX workflows):** Beamer `.tex` is authoritative; Quarto `.qmd` derives from it.
+**Example (Word workflows):** `paper/manuscript.docx` is authoritative after handoff; talks and supplements derive from it, and agents never overwrite it.
 
 **Example (R workflows):** Analysis scripts are authoritative; reports derive from them.
 

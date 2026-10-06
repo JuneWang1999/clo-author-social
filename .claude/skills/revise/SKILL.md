@@ -17,7 +17,7 @@ Structure point-by-point referee responses with classification, agent routing pe
 
 ### Step 1: Parse Inputs
 1. Read referee report(s) from `$ARGUMENTS`
-2. Read the paper (paper/main.tex or specified path)
+2. Read the paper: snapshot of `paper/manuscript.docx` via `.claude/scripts/docx_snapshot.sh` (or the specified .docx)
 3. Read revision protocol from rules
 4. Read existing scripts to know what analyses already exist
 
@@ -42,19 +42,26 @@ Save to `quality_reports/referee_response_tracker.md` with:
 - DISAGREE → draft diplomatic response, flag prominently for user
 
 ### Step 5: Draft Response Letter
-Generate LaTeX response letter with:
+Write the response letter in Markdown from `templates/response-letter.md`, then build it to Word:
+
+```bash
+pandoc quality_reports/referee_response_[journal]_[date].md \
+  -o quality_reports/referee_response_[journal]_[date].docx \
+  --reference-doc=paper/word/letter-reference.docx
+```
+
+The letter contains:
 - Summary of major changes
-- Point-by-point responses with exact referee quotes
-- Color-coded responses
-- Page/section references for each change
+- Point-by-point responses with exact reviewer quotes (indented italic "Referee Comment" style)
+- Section/page references for each change in the revised manuscript
 
 ### Step 6: Diplomatic Disagreement Protocol
 When DISAGREE: open with acknowledgment, provide evidence, offer partial concession, NEVER say "the referee is wrong." FLAG for user review.
 
 ### Step 7: Save Outputs
 1. Tracker: `quality_reports/referee_response_tracker.md`
-2. Response letter: `quality_reports/referee_response_[journal]_[date].tex`
-3. Revised sections: `paper/sections/` (for CLARIFICATION/REWRITE items)
+2. Response letter: `quality_reports/referee_response_[journal]_[date].md` + `.docx`
+3. Manuscript changes: change lists in `quality_reports/revisions/` (CLARIFICATION/REWRITE/MINOR items), one per referee or topic — the user applies them in `paper/manuscript.docx` with Track Changes on, which also produces the tracked-changes version most journals request. Never edit the master (INV-25).
 
 ---
 
@@ -63,7 +70,7 @@ When DISAGREE: open with acknowledgment, provide evidence, offer partial concess
 | Resource | Path | When |
 |----------|------|------|
 | Response tracker | `templates/response-tracker.md` | Step 3 — tracking document |
-| Response letter | `templates/response-letter.tex` | Step 5 — LaTeX boilerplate |
+| Response letter | `templates/response-letter.md` | Step 5 — Markdown → Word letter |
 | Diplomatic disagreement | `templates/diplomatic-disagreement.md` | Step 6 — DISAGREE phrasing |
 | Gotchas | `gotchas.md` | Always — known failure points |
 

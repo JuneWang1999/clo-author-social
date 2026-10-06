@@ -1,154 +1,122 @@
-# Figure Standards
+# Figure Standards (APA 7, Word)
 
-Publication-quality figures for economics papers. All figures must be directly includable in the LaTeX manuscript without manual editing.
+Publication-quality figures for APA manuscripts in Word. Every figure is a PNG (300 dpi or more) that the manuscript build inserts at 6.5 in wide, with the bold number and italic title above it and a note below — all taken from `paper/displays.csv`.
+
+Mirror of `.claude/rules/content-standards.md` Section 2, with code. If the two ever differ, `content-standards.md` wins.
 
 ---
 
 ## Core Rules
 
-- **Never add titles or subtitles inside ggplot** -- use `labs(title = NULL, subtitle = NULL)`
+- **Never add titles or subtitles inside ggplot** — `labs(title = NULL, subtitle = NULL)` (INV-12)
 - **Figure information goes in two places:**
-  1. **File name** -- descriptive, e.g., `fig1_hispanic_enrollment_ascm.pdf`
-  2. **LaTeX `\caption{}`** -- the authoritative title, numbered and editable without re-running R
-- **Panel labels are the exception** -- "Panel A: Employment" inside multi-panel figures (via `patchwork`, `cowplot`, etc.) is fine since they identify sub-panels, not the whole figure
-- **Axis labels must be publication-quality** -- "Employment Rate" not "emp_rate". Clean labels stay in the figure; titles and context go in the caption
-- **Use serif fonts** -- figures should match the paper's body text
-- **Output PDF for figures** -- vector graphics for LaTeX. Use `ggsave("fig.pdf")`. PNG only for raster content (maps, photos)
+  1. **File name** — descriptive, e.g., `fig2_condition_by_prior_achievement.png`
+  2. **`paper/displays.csv`** — the APA title and note (or the *Figure Title* / *Figure Note* paragraphs once the Word master exists)
+- **Panel labels are the exception** — "Panel A: Grade 6" inside multi-panel figures (`patchwork`, `cowplot`) is fine
+- **Axis labels publication-quality, title case, with units or scale** — "Self-Efficacy (1–5)" not `se_mean`
+- **Sans serif text inside the figure** (APA recommends sans serif, 8–14 pt at final size)
+- **Show uncertainty** — 95% CIs or ±1 *SE*, stated in the note
 
 ---
 
 ## Font and Theme
 
-Set serif fonts to match the paper's body text:
-
 ```r
-theme_paper <- theme_minimal(base_family = "serif", base_size = 11) +
+theme_apa <- theme_minimal(base_family = "sans", base_size = 12) +
   theme(
     panel.grid.minor = element_blank(),
     legend.position  = "bottom",
-    plot.title       = element_blank(),  # No titles -- INV-12
-    plot.subtitle    = element_blank()
+    plot.title       = element_blank(),   # No titles -- INV-12
+    plot.subtitle    = element_blank(),
+    axis.line        = element_line(color = "black")
   )
 
-theme_set(theme_paper)
+theme_set(theme_apa)
 ```
 
-For Python (matplotlib):
+Python (matplotlib):
 ```python
 import matplotlib.pyplot as plt
-plt.rcParams.update({
-    "font.family": "serif",
-    "font.size": 11,
-    "axes.grid": True,
-    "grid.alpha": 0.3,
-})
+plt.rcParams.update({"font.family": "sans-serif", "font.size": 12,
+                     "axes.spines.top": False, "axes.spines.right": False})
 ```
 
 ---
 
 ## Axis Labels
 
-- **Show all years on the x-axis** when the panel spans ~20 years or fewer:
-  ```r
-  scale_x_continuous(breaks = min_year:max_year)
-  ```
-  Only thin out labels when they overlap (roughly >20 ticks).
-
-- **Human-readable labels:**
-  - "Log Wages (2010 USD)" not "ln_wage_deflated"
-  - "Share of Female Workers" not "pct_female"
-  - Include units where applicable
+- **Show all waves / years** on the x-axis when there are about 20 ticks or fewer: `scale_x_continuous(breaks = min_wave:max_wave)`
+- **Human-readable labels with units:** "Posttest Score (Scale Score)", "Proportion Correct", "Weeks Since Baseline"
 
 ---
 
 ## Color
 
-- **Colorblind-friendly palettes** -- use `scale_color_brewer(palette = "Set2")`, `viridis`, or similar
-- **Never rely on red/green contrast alone**
-- **Color-independent design** -- figures must be readable in grayscale:
-  - Combine color with shape (`shape` aesthetic)
-  - Combine color with linetype (`linetype` aesthetic)
-  - Series remain distinguishable without color
+- **Colorblind-friendly palettes** — Okabe–Ito, viridis, `scale_color_brewer(palette = "Set2")`; never red/green contrast alone
+- **Grayscale-readable** — combine color with `shape` and `linetype`
 
-Recommended palettes:
 ```r
-# Option 1: ColorBrewer
-scale_color_brewer(palette = "Set2")
-
-# Option 2: Viridis (perceptually uniform)
-scale_color_viridis_d()
-
-# Option 3: Manual (maximum control)
-scale_color_manual(values = c("#1b9e77", "#d95f02", "#7570b3"))
+okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
+scale_color_manual(values = okabe_ito)
+scale_color_viridis_d(end = 0.85)
 ```
 
 ---
 
-## Figure Width
+## Common Figure Types (psychology / education)
 
-- **Single-panel:** `width=0.8\textwidth` in LaTeX, `width = 6, height = 4` in ggsave
-- **Side-by-side panels:** `width=0.48\textwidth` each in LaTeX
-- **Full-width landscape:** use `\begin{landscape}` environment
-
-In R:
+### Means by Condition with Raw Data
 ```r
-ggsave(
-  here("paper", "figures", "fig_event_study.pdf"),
-  plot = p,
-  width = 6,
-  height = 4,
-  device = cairo_pdf  # Better font embedding
-)
+ggplot(df, aes(condition, score)) +
+  geom_jitter(width = 0.15, alpha = 0.25) +
+  stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.1) +
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  labs(x = "Condition", y = "Posttest Score")
 ```
 
----
-
-## Common Figure Types
-
-### Event Study Plot
+### Interaction / Simple Slopes
 ```r
-ggplot(es_data, aes(x = relative_time, y = estimate)) +
-  geom_point(size = 2) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  geom_vline(xintercept = -0.5, linetype = "dotted", color = "gray50") +
-  labs(x = "Periods Relative to Treatment", y = "Estimated Effect") +
-  theme_paper
+ggplot(pred, aes(prior, fit, color = condition, linetype = condition)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = condition), alpha = 0.15, color = NA) +
+  geom_line() +
+  labs(x = "Prior Achievement (Centered)", y = "Predicted Posttest Score",
+       color = "Condition", linetype = "Condition", fill = "Condition")
 ```
 
-### Coefficient Plot
+### Growth Trajectories
 ```r
-library(modelsummary)
-modelplot(models, coef_omit = "Intercept") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  theme_paper
+ggplot(traj, aes(wave, estimate, group = group, color = group, shape = group)) +
+  geom_line() + geom_point(size = 2) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1) +
+  labs(x = "Wave", y = "Reading Score")
 ```
 
-### RDD Plot
+### Coefficient / Forest Plot (incl. meta-analysis)
 ```r
-rdplot(y = df$outcome, x = df$running_var, c = cutoff,
-       x.label = "Running Variable", y.label = "Outcome")
+ggplot(coefs, aes(estimate, reorder(term, estimate))) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.2) +
+  geom_point() +
+  labs(x = "Standardized Effect (95% CI)", y = NULL)
 ```
+
+### Event Study / RDD
+Event-study and RD plots follow the same rules: zero reference line, CIs on every point, treatment onset or cutoff marked, axis labels in words.
 
 ---
 
 ## Export
 
 ```r
-# PDF for LaTeX inclusion (vector graphics)
 ggsave(
-  here("paper", "figures", "fig_main.pdf"),
-  plot = p,
-  width = 6, height = 4
-)
-
-# PNG only for raster content
-ggsave(
-  here("paper", "figures", "map_treatment.png"),
-  plot = p_map,
-  width = 8, height = 6, dpi = 300
+  here("paper", "figures", "fig1_condition_means.png"),
+  plot = p, width = 6.5, height = 4.5, dpi = 300, bg = "white"
 )
 ```
+
+- PNG, 300 dpi minimum (600 dpi for line art if the journal asks); white background
+- Keep a vector copy (`.pdf` or `.svg`) only if the journal requests production files
+- Add the figure to `paper/displays.csv` (writer fills in title and note)
 
 ---
 
@@ -156,40 +124,12 @@ ggsave(
 
 ```
 figures/
-  descriptive/
-    fig_histogram_outcome.pdf
-    fig_time_series_treatment.pdf
-  estimation/
-    fig_event_study_main.pdf
-    fig_coefplot_heterogeneity.pdf
-    fig_rdd_main.pdf
-  robustness/
-    fig_placebo_test.pdf
-    fig_sensitivity_bandwidth.pdf
+├── fig1_condition_means.png
+├── fig2_condition_by_prior_achievement.png
+└── figS1_attrition_flow.png        # supplementary
 ```
 
-Pattern: `fig_{description}.pdf`
-
----
-
-## LaTeX Inclusion
-
-```latex
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{figures/estimation/fig_event_study_main.pdf}
-\caption{Event study estimates of treatment effect. The figure plots point estimates
-and 95\% confidence intervals for each period relative to treatment. The dashed
-vertical line marks treatment onset. Pre-treatment coefficients are not statistically
-different from zero, consistent with parallel trends. Source: [data source].}
-\label{fig:event_study}
-\end{figure}
-```
-
-Key elements of figure captions (INV-2):
-- What is shown
-- How to read it
-- Data source
+Pattern: `fig{N}_{description}.png` — the number in the file name is provisional; `displays.csv` holds the final number.
 
 ---
 
@@ -197,10 +137,9 @@ Key elements of figure captions (INV-2):
 
 | Pattern | Reason |
 |---------|--------|
-| `ggtitle()` or `labs(title = "...")` | Titles go in LaTeX `\caption{}` (INV-12) |
-| `plt.title()` in matplotlib | Same reason |
-| Default ggplot theme (gray background) | Use `theme_minimal` or custom theme |
-| Red/green only color schemes | Not colorblind-friendly |
-| JPG format | Lossy compression; use PDF for vector, PNG for raster |
-| Axis labels with underscores | Human-readable labels required |
-| Legend inside plot area (overlapping data) | Use `legend.position = "bottom"` |
+| `ggtitle()` or `labs(title = "...")` | Titles go above the image in the manuscript (INV-12) |
+| Screenshots of console output or of tables | Tables must be editable Word tables (INV-13) |
+| JPEG for charts | Lossy compression blurs lines and text; use PNG |
+| Low resolution (< 300 dpi) | Journals reject; Word upscaling blurs |
+| Red/green only distinctions | Not colorblind-safe |
+| Unlabeled error bars | The note must say what they represent (INV-2) |

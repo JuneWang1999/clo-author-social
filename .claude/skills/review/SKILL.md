@@ -16,9 +16,12 @@ Unified review command that routes to the appropriate critic agents based on the
 ## Routing Logic
 
 ### Auto-detect by file type
-- `.tex` paper file → **Comprehensive review** (writer-critic + strategist-critic + Verifier)
+- `.docx` manuscript (`paper/manuscript.docx`, a draft in `paper/drafts/`, or a revised copy) → **Comprehensive review** (writer-critic + strategist-critic + Verifier)
+- `.md` section draft in `paper/sections/` → **Comprehensive review** of the current draft build
 - `.R`, `.py`, `.do`, `.jl` file → **Code review** (coder-critic standalone, categories 4-12)
-- `.tex` talk file (in talks/) → **Talk review** (storyteller-critic)
+- `.pptx` or slide `.md` in `paper/talks/` → **Talk review** (storyteller-critic)
+
+**All reviews are read-only on Word/PowerPoint files.** Critics read the `.docx` through `.claude/scripts/docx_snapshot.sh` and `.claude/scripts/check_docx_format.py`, and the `.pptx` through `.claude/scripts/pptx_text.py`. Nothing in a review writes to `paper/manuscript.docx` or a talk master (INV-25).
 
 ### Explicit flags (override auto-detect)
 - `--peer [journal]` → **Full peer review** (editor desk review → referee dispatch → editorial decision)
@@ -35,11 +38,11 @@ Unified review command that routes to the appropriate critic agents based on the
 
 ## Mode Details
 
-### Comprehensive Review (default for .tex paper)
+### Comprehensive Review (default for a .docx manuscript)
 Dispatch in parallel:
 1. **strategist-critic** — causal design audit (4 phases)
 2. **writer-critic** — manuscript polish (6 categories)
-3. **Verifier** — compilation check
+3. **Verifier** — build/format check
 Compute weighted aggregate score.
 
 ### Full Peer Review (`--peer [journal]`)
@@ -259,7 +262,7 @@ python3 scripts/generate_dashboard.py
 
 ### Manuscript Polish (`--proofread`)
 Dispatch **writer-critic** standalone:
-- 6 categories: structure, claims-evidence, ID fidelity, writing, grammar, compilation
+- Categories 4, 5, 6, 8: writing quality, APA/Word format, build integrity, notation
 - Save report to `quality_reports/[file]_proofread_report.md`
 
 ### Cross-Language Replication (`--replicate [language]`)
@@ -275,12 +278,12 @@ Dispatch **writer-critic** standalone:
 
 The Verifier produces a binary PASS/FAIL result:
 
-**For papers (`.tex`):**
-- LaTeX compiles error-free (warnings acceptable, errors not)
-- All figures referenced exist and render
-- All references resolve (no `??`, no undefined citations)
-- All tables render correctly
-- Bibliography compiles without errors
+**For papers (`.docx`):**
+- Draft phase: `Rscript paper/build_manuscript.R` runs without errors and no `[Missing file: …]` or `[Section not drafted yet: …]` placeholders appear in the output
+- `python3 .claude/scripts/check_docx_format.py <file>` reports no FAIL
+- Every table/figure in `displays.csv` (draft) or in the master exists and is called out in the text
+- Every in-text citation has a reference-list entry and vice versa (pandoc warns about missing keys in drafts)
+- Word-master phase: `paper/manuscript.docx` opens (valid .docx) and was not modified by the pipeline
 
 **For code (`.R`, `.py`, `.do`, `.jl`):**
 - Script runs without errors from start to finish
@@ -319,11 +322,11 @@ All review checklists, rubrics, and templates live under `review/`:
 
 | File | Used By | Content |
 |------|---------|---------|
-| `templates/manuscript-review-8-categories.md` | writer-critic | 8 check categories: structure, claims, ID fidelity, writing, LaTeX, compilation, voice, notation |
+| `templates/manuscript-review-8-categories.md` | writer-critic | 8 check categories: structure, claims, ID fidelity, writing, APA/Word format, build integrity, voice, notation |
 | `templates/code-review-16-categories.md` | coder-critic | 16 check categories: strategic alignment (4) + code quality (12) |
 | `templates/causal-audit-4-phases.md` | strategist-critic | 4-phase sequential protocol: claim, design, inference, polish |
 | `templates/theory-review-4-phases.md` | theorist-critic | 4-phase theory review: claim, proof validity, assumptions, citations/linkage |
-| `templates/talk-review-6-categories.md` | storyteller-critic | 6 check categories: narrative, visual, content, scope, compilation, coherence |
+| `templates/talk-review-6-categories.md` | storyteller-critic | 6 check categories: narrative, visual, content, scope, build integrity, coherence |
 | `templates/literature-review-6-categories.md` | librarian-critic | 6 check categories: coverage, journal quality, scope, recency, categorization, BibTeX |
 | `templates/data-review-6-categories.md` | explorer-critic | 6 check categories: measurement, sample, external validity, alternatives, feasibility, ID compatibility |
 | `templates/disposition-pool.md` | editor | Referee dispositions, pet peeves, desk reject criteria, decision rules, report formats |

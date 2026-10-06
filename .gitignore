@@ -2,21 +2,15 @@
 # .gitignore for Academic Claude Code Projects
 # ==============================================================================
 
-# LaTeX build artifacts
-*.aux
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.log
-*.nav
-*.out
-*.snm
-*.toc
-*.vrb
-*.synctex.gz
-*.run.xml
-*-blx.bib
+# Word / PowerPoint
+# Office lock files (created while a document is open)
+~$*
+*.knit.md
+*.utf8.md
+# Draft builds are regenerated; masters (paper/manuscript.docx, talks/*.pptx) are tracked
+paper/drafts/
+paper/talks/drafts/
+quality_reports/snapshots/*_media/
 
 # Compiled PDFs (uncomment to track specific PDFs)
 # *.pdf
@@ -50,8 +44,6 @@ Thumbs.db
 
 # Quarto rendering artifacts
 /.quarto/
-paper/quarto/*_files/
-paper/quarto/.quarto/
 
 # Output artifacts — uncomment lines below based on your preference
 # *.rds

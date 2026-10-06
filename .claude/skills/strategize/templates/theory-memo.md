@@ -1,6 +1,6 @@
 # Theory Memo Template
 
-**Purpose:** Prose overview produced by the theorist agent. Accompanies the formal LaTeX files (assumptions.tex, results.tex, proofs.tex). Explains what is proved, under what assumptions, and what remains open.
+**Purpose:** Prose overview produced by the theorist agent. Accompanies the formal Markdown + math files (assumptions.md, results.md, proofs.md). Explains what is proved, under what assumptions, and what remains open.
 
 ---
 
@@ -26,12 +26,12 @@
 
 | Object | Status | Where |
 |--------|--------|-------|
-| Identification result | [complete / partial / not needed] | results.tex, Theorem [N] |
-| Consistency | [complete / partial / not needed] | results.tex, Theorem [N] |
-| Asymptotic normality | [complete / partial / not needed] | results.tex, Theorem [N] |
-| Influence function | [complete / partial / not needed] | results.tex, Lemma [N] |
-| Bootstrap validity | [complete / partial / not needed] | results.tex, Theorem [N] |
-| Comparative statics | [complete / partial / not needed] | results.tex, Proposition [N] |
+| Identification result | [complete / partial / not needed] | results.md, Theorem [N] |
+| Consistency | [complete / partial / not needed] | results.md, Theorem [N] |
+| Asymptotic normality | [complete / partial / not needed] | results.md, Theorem [N] |
+| Influence function | [complete / partial / not needed] | results.md, Lemma [N] |
+| Bootstrap validity | [complete / partial / not needed] | results.md, Theorem [N] |
+| Comparative statics | [complete / partial / not needed] | results.md, Proposition [N] |
 
 ---
 
@@ -78,8 +78,8 @@
 
 | File | Contents |
 |------|----------|
-| `assumptions.tex` | Numbered assumption block, ready for paper |
-| `results.tex` | Definitions, lemmas, propositions, theorems in LaTeX |
-| `proofs.tex` | Full proofs with justified steps |
+| `assumptions.md` | Numbered assumption block, ready for paper |
+| `results.md` | Definitions, lemmas, propositions, theorems (Markdown + math) |
+| `proofs.md` | Full proofs with justified steps |
 | `notation_glossary.md` | Every symbol, its type, and its meaning |
 ```

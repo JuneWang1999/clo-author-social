@@ -19,15 +19,17 @@ Draft paper sections, apply a cleanup pass, or extract a personal style guide fr
 Draft a specific section of an APA 7 manuscript: `intro`, `method`, `results`, `discussion`, `abstract`, or `full`. Legacy aliases: `strategy` → `method` (Design and Data Analysis subsections), `conclusion` → `discussion`, `data` → `method` (Participants and Measures subsections).
 
 **Agent:** Writer
-**Output:** LaTeX section file in paper/sections/; `paper/main.tex` created from `templates/latex/apa7-main.tex` if missing
-**Format:** `.claude/rules/working-paper-format.md` (APA 7, `apa7` class, biblatex-apa)
+**Output (draft phase):** Markdown section file in `paper/sections/`, updated `paper/manuscript.Rmd` params and `paper/displays.csv`, rebuilt `paper/drafts/manuscript_draft.docx`
+**Output (Word-master phase, `paper/manuscript.docx` exists):** change list in `quality_reports/revisions/` (or a revised copy in `paper/revisions/`) — never edits the master (INV-25)
+**Format:** `.claude/rules/working-paper-format.md` (APA 7 in Microsoft Word)
 
 Workflow:
 
 #### 1. Context Gathering
 
 Before drafting, read all available context:
-1. Read existing paper draft in `paper/` (if it exists)
+0. **Phase check:** does `paper/manuscript.docx` exist? If yes, take a fresh snapshot (`.claude/scripts/docx_snapshot.sh`) and work in Word-master mode — the snapshot is your view of the paper; proposals go to a change list
+1. Read the existing draft (`paper/sections/*.md`) or the snapshot
 2. Read `master_supporting_docs/` for notes, outlines, research specs
 3. Read most recent `quality_reports/research_spec_*.md` or `quality_reports/lit_review_*.md`
 4. Read `.claude/references/domain-profile.md` for field conventions and `.claude/references/journal-profiles.md` for the target journal (abstract limit, required statements, float placement)
@@ -60,7 +62,7 @@ Based on `$ARGUMENTS`:
 
 #### 4. Dispatch Writer
 
-Dispatch Writer with paper type and argument-move templates for the target section. The writer drafts using paragraph types (motivation, result statement, mechanism, etc.), applies design-specific moves, then runs the cleanup pass. Save to `paper/sections/[section].tex`.
+Dispatch Writer with paper type and argument-move templates for the target section. The writer drafts using paragraph types (motivation, result statement, mechanism, etc.), applies design-specific moves, then runs the cleanup pass. Draft phase: save to `paper/sections/[section].md` and rebuild the draft. Word-master phase: write a change list instead (never edit `paper/manuscript.docx`).
 
 #### 5. Quality Self-Check
 
@@ -74,7 +76,10 @@ Before presenting the draft:
 - [ ] Statistics in APA form (INV-4): exact *p*, effect size + 95% CI, *df*, no leading zero on bounded statistics
 - [ ] Bias-free, specific language about participants (INV-24)
 - [ ] Every displayed equation is numbered (`\label{eq:...}`)
-- [ ] All `\textcite{}` / `\parencite{}` keys exist in `Bibliography_base.bib`
+- [ ] All `@key` / `[@key]` citation keys exist in `Bibliography_base.bib` (exported from Zotero)
+- [ ] `displays.csv` lists every table/figure with number, title, and note; numbers follow order of first mention
+- [ ] Draft builds: `Rscript paper/build_manuscript.R`, then `python3 .claude/scripts/check_docx_format.py paper/drafts/manuscript_draft.docx` has no FAIL
+- [ ] Word-master phase: nothing written to `paper/manuscript.docx`; every change is in the change list with exact current text
 - [ ] Introduction contribution paragraph names specific papers
 - [ ] Effect sizes stated with units or as standardized effects interpreted against field benchmarks
 - [ ] No banned hedging phrases
@@ -108,13 +113,13 @@ One-shot extraction of the user's writing voice from their published or drafted 
 - Once at the start of a project, after pointing at a directory of the user's prior papers
 - After publishing a new paper that shifts voice (re-run to refresh the profile)
 
-**Input:** `$ARGUMENTS` — path to a directory containing prior papers (.tex or .pdf). If omitted, defaults to `master_supporting_docs/` and scans for .tex/.pdf files.
+**Input:** `$ARGUMENTS` — path to a directory containing prior papers (.docx or .pdf; .tex also accepted). If omitted, defaults to `master_supporting_docs/` and scans for .docx/.pdf files. Read .docx files with `pandoc <file> -t plain`.
 
 **Agent:** Writer (style-extraction mode)
 **Output:** `.claude/references/personal-style-guide.md`
 
 Workflow:
-1. **Discover corpus.** List .tex and .pdf files in the target directory. If fewer than 2 papers found, flag and ask before proceeding (style extraction on a single paper overfits).
+1. **Discover corpus.** List .docx and .pdf files in the target directory. If fewer than 2 papers found, flag and ask before proceeding (style extraction on a single paper overfits).
 2. **Sample strategically.** For each paper, extract:
    - The full introduction
    - The first two paragraphs of each major section
@@ -167,15 +172,22 @@ Strips 24 patterns across 4 categories:
 
 ---
 
-## LaTeX Conventions
+## Markdown and Word Conventions (draft phase)
 
-- APA 7 manuscript: `\documentclass[man,floatsintext]{apa7}` — start from `templates/latex/apa7-main.tex`
-- `\textcite{}` for narrative citations ("Smith (2024) shows...")
-- `\parencite{}` for parenthetical citations ("...is well documented (Smith, 2024)"); `\parencite[p.~12]{key}` for quotations
-- `\Cref{tab:...}` / `\Cref{fig:...}` → "Table 1" / "Figure 2"; refer to sections by name
-- `booktabs` rules (`\toprule`, `\midrule`, `\bottomrule`) — never `\hline`
-- Statistics in math or italics: `\textit{t}(118) = 2.45, \textit{p} = .016, \textit{d} = 0.45, 95\% CI [0.08, 0.81]`
-- Notation protocol: `references/notation-protocol.md` (multilevel $Y_{ij}$, latent-variable, and potential-outcomes notation)
+- Section files: `paper/sections/<name>.md`, Pandoc Markdown; headings `#` (Level 1) to `#####` (Level 5); the introduction has no heading
+- Narrative citation `@key` → Smith (2024); parenthetical `[@key]` → (Smith, 2024); several `[@a; @b]`; with page `[@key, p. 12]`; year only `[-@key]`
+- Call out tables and figures as plain text "Table 1", "Figure 2" — numbers must match `displays.csv`; refer to sections by name
+- Statistics with Markdown italics: `*t*(118) = 2.45, *p* = .016, *d* = 0.45, 95% CI [0.08, 0.81]`
+- Math: `$Y_{ij} = \gamma_{00} + u_{0j} + r_{ij}$` becomes a native Word equation
+- Footnotes: `text^[Footnote text.]` (use sparingly; APA prefers integrating content into the text)
+- Notation protocol: `references/notation-protocol.md`
+
+## Word-Master Conventions (after handoff)
+
+- Read: `.claude/scripts/docx_snapshot.sh paper/manuscript.docx` (fresh each time; shows the user's tracked changes and comments)
+- Propose: `quality_reports/revisions/YYYY-MM-DD_<topic>.md` from `templates/change-list.md` — exact current text, proposed text, reason, citations to insert with Zotero
+- Large rewrites: edit a copy of the snapshot, then `.claude/scripts/revised_copy.sh <edited.md> <topic>` → `paper/revisions/…docx`; the user merges with Word's Review › Compare
+- Never write to `paper/manuscript.docx` (INV-25)
 
 ---
 

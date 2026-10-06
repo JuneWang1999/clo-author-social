@@ -1,6 +1,6 @@
 # Plan: Adapt Fork to APA 7 + Psychology/Education Research
 
-**Status:** APPROVED (user request, 2026-10-06), IN PROGRESS
+**Status:** COMPLETED (2026-10-06) — commits fd970e3, c3685d1, and the settings.json cleanup
 **Date:** 2026-10-06
 **Scope:** Three parts, one commit per part.
 

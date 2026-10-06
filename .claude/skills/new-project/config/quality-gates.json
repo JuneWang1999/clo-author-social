@@ -14,7 +14,7 @@
       "coder-critic": 80,
       "writer-critic": 80
     },
-    "required_artifacts": ["paper/main.tex", "paper/tables/"]
+    "required_artifacts": ["paper/drafts/manuscript_draft.docx", "paper/tables/"]
   },
   "peer_review_to_submission": {
     "required_overall": 95,

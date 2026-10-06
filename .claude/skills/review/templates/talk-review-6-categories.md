@@ -78,10 +78,10 @@ Extracted from `storyteller-critic.md`. Used by the storyteller-critic agent for
 
 ---
 
-## 5. Compilation
+## 5. Build Integrity
 
-- **Beamer:** Does it compile without errors? No overfull hbox warnings?
-- **Quarto:** Does `quarto render` produce clean HTML? No missing references?
+- **Draft deck:** Does `paper/talks/build_talk.sh <name>` succeed with no `Could not fetch resource` warnings (missing images)?
+- **User-owned deck:** Does `pptx_text.py` read it cleanly? Was it left untouched by the pipeline (INV-25)?
 - All referenced figures/tables exist?
 
 ---

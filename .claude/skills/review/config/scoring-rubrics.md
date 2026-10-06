@@ -10,7 +10,7 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 
 | Issue | Deduction |
 |-------|-----------|
-| Paper doesn't compile | -20 |
+| Draft build fails, or the pipeline modified the Word master (INV-25) | -20 |
 | Causal language without a causal design (INV-8) -- incl. causal mediation claims from cross-sectional data | -20 |
 | No claim-source map (INV-22) | -15 |
 | Numbers in text don't match tables (INV-11) | -10 per, max -30 |
@@ -32,7 +32,7 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 | Claim-source map entries missing | -5 per, max -20 |
 | Broken links in claim-source map | -10 per |
 | Sentence length median off by >5 words | -5 |
-| Not `apa7` `man` mode, or layout packages overriding the class | -5 |
+| Margins, font/size, or double spacing not APA | -5 |
 | Uniform sentence length (no variation) | -5 |
 
 ### Minor (polish)
@@ -44,12 +44,12 @@ Consolidated deduction tables from all critic agents. Each critic starts at 100 
 | Em dash overuse | -3 |
 | Rule of three | -3 |
 | Paragraph openings don't match style guide | -3 per, max -9 |
-| Unresolved references | -3 per |
-| `\citet`/`\citep` or hand-typed citations | -1 per, max -5 |
+| Citation keys not found / citation–reference mismatches | -3 per |
+| Hand-typed reference list or citations not from Zotero/.bib | -3 |
 | Caption below table/figure (APA: above) | -2 per, max -6 |
 | Biased or imprecise language about people (INV-24) | -2 per, max -6 |
 | Economics-style roadmap paragraph | -2 |
-| Overfull hbox warnings | -1 per, max -5 |
+| Headings typed as bold text instead of heading styles | -2 |
 
 ---
 
@@ -148,7 +148,7 @@ The strategist-critic does not use a point-deduction rubric. Instead, it classif
 | | Orphan claim (stated in paper, not supported by any theorem) | -10 |
 | **Exposition** | Proof strategy missing | -3 |
 | | Appendix reference broken | -2 |
-| | Theorem environment doesn't match preamble | -2 |
+| | Result labels/numbering inconsistent across theory files and manuscript | -2 |
 
 ---
 
@@ -158,7 +158,7 @@ The strategist-critic does not use a point-deduction rubric. Instead, it classif
 
 | Issue | Deduction |
 |-------|-----------|
-| Slides don't compile | -20 |
+| Slides don't build, or the pipeline overwrote the user's .pptx (INV-25) | -20 |
 | Numbers don't match paper | -20 |
 | Wrong narrative arc for paper type | -15 |
 | No hook in first 2 slides | -15 |

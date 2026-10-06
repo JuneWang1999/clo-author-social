@@ -4,9 +4,10 @@ Known failure points and edge cases for data analysis.
 
 ## R Packages
 
-- `fixest::etable()` with `tex=TRUE` includes `\begin{table}` wrappers by default. Use `style.tex = style.tex(tpt=TRUE)` or export manually for bare tabular output (INV-13).
+- Don't export model tables with `fixest::etable()` / `modelsummary()` LaTeX output. Get a data frame (`modelsummary(..., output = "data.frame")`, `broom::tidy()`, `parameters::model_parameters()`), format it with `apa_num()`/`apa_p()`/`apa_ci()`, then `apa_flextable()`.
 - `modelsummary` silently drops coefficients when `coef_rename` keys don't match variable names exactly. Always check output dimensions against model object.
-- `modelsummary` with `output = "latex"` adds table float wrappers. Use `output = "latex_tabular"` for bare tabular.
+- `flextable::save_as_docx()` previews are for humans; the manuscript build reads the `.rds`. Always save both with `apa_save_table()`.
+- `apa_flextable()` resets borders. Apply it before adding custom rules (or use `apa_spanner()` for spanner heads).
 - Clustering syntax differs between `fixest` and `lm` -- always use `fixest::feols()` for cluster-robust standard errors.
 - R's `haven::read_dta()` preserves Stata value labels as attributes -- use `as_factor()` explicitly or they'll be invisible numeric codes.
 - `did::att_gt()` requires the group variable to be the year of first treatment (0 for never-treated). Miscoding this produces silent wrong results.
@@ -29,9 +30,10 @@ Known failure points and edge cases for data analysis.
 
 ## Output
 
-- Figures must not have titles inside ggplot (INV-12). Titles go in LaTeX `\caption{}`.
-- Tables must be bare `tabular` -- no `\begin{table}` wrapper (INV-13).
-- PDF is the required format for figures (vector graphics for LaTeX). PNG only for raster content.
+- Figures must not have titles inside ggplot (INV-12). Titles go in `paper/displays.csv`.
+- Tables carry no number, title, or note (INV-13) — those live in `displays.csv`.
+- PNG at 300 dpi is the required figure format for Word and PowerPoint. Set `bg = "white"` in `ggsave()` or transparent backgrounds turn black in some viewers.
+- Never write to `paper/manuscript.docx`. After handoff, regenerated tables/figures are delivered as files the user copies in.
 - `results_summary.md` is mandatory. Without it, the writer agent cannot draft the results section.
 
 ## Cross-Language (--dual mode)

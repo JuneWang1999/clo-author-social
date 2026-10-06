@@ -42,7 +42,7 @@ Adding a new agent: create the agent file in `.claude/agents/`, add an entry her
 - **PARALLEL_GROUP:** strategy
 - **REQUIRES:** `quality_reports/strategy/{project}/strategy_memo.md`
 - **PRODUCES:** `quality_reports/theory/{project}/`
-  - Required files: `theory_memo.md`, `assumptions.tex`, `results.tex`, `proofs.tex`, `notation_glossary.md`
+  - Required files: `theory_memo.md`, `assumptions.md`, `results.md`, `proofs.md`, `notation_glossary.md`
 - **CRITIC:** theorist-critic
 - **ESCALATION_TARGET:** User — proof-level disagreement, user adjudicates whether the result holds
 - **QUALITY_WEIGHT:** 20% (theory, when present)
@@ -69,8 +69,8 @@ Adding a new agent: create the agent file in `.claude/agents/`, add an entry her
 ## writer
 - **PHASE:** Execution
 - **PARALLEL_GROUP:** execution-write
-- **REQUIRES:** coder-critic score >= 80 AND `paper/tables/` contains `.tex` files
-- **PRODUCES:** `paper/main.tex`, `paper/sections/*.tex`, `quality_reports/claim_source_map_{project}.md`
+- **REQUIRES:** coder-critic score >= 80 AND `paper/tables/` contains table files (`.rds` or `.csv`)
+- **PRODUCES:** Draft phase: `paper/sections/*.md`, `paper/displays.csv`, `paper/manuscript.Rmd` params, `paper/drafts/manuscript_draft.docx`; Word-master phase: `quality_reports/revisions/*.md` change lists (never `paper/manuscript.docx` — INV-25); always `quality_reports/claim_source_map_{project}.md`
 - **CRITIC:** writer-critic
 - **ESCALATION_TARGET:** Orchestrator — structural rewrite, not just polish
 - **QUALITY_WEIGHT:** 10% (manuscript polish)
@@ -108,7 +108,7 @@ Adding a new agent: create the agent file in `.claude/agents/`, add an entry her
 - **PHASE:** Presentation
 - **PARALLEL_GROUP:** presentation
 - **REQUIRES:** writer-critic score >= 80
-- **PRODUCES:** `paper/talks/` or `paper/quarto/`
+- **PRODUCES:** `paper/talks/<name>.md` + `paper/talks/drafts/<name>_draft.pptx` (never a user-owned `paper/talks/<name>.pptx` — INV-25)
 - **CRITIC:** storyteller-critic
 - **ESCALATION_TARGET:** Writer — talk narrative issues stem from paper structure
 - **QUALITY_WEIGHT:** Advisory (reported, non-blocking)

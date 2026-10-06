@@ -79,12 +79,12 @@
 ### Tables
 | File | Description | Paper location |
 |------|-------------|---------------|
-| `paper/tables/[name].tex` | [what it shows] | Table [N] |
+| `paper/tables/[name].rds` (+ `.docx` preview) | [what it shows] | Table [N] |
 
 ### Figures
 | File | Description | Paper location |
 |------|-------------|---------------|
-| `paper/figures/[name].pdf` | [what it shows] | Figure [N] |
+| `paper/figures/[name].png` | [what it shows] | Figure [N] |
 
 ### Intermediate Objects
 | File | Description |

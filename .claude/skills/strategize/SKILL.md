@@ -200,7 +200,7 @@ Produce a formal theory section: assumptions, definitions, lemmas, theorems, and
 **Input:** `$ARGUMENTS` — research question, path to strategy memo, or path to existing paper/draft.
 
 **Agents:** Theorist → theorist-critic
-**Output:** Theory memo + assumptions.tex + results.tex + proofs.tex + notation glossary
+**Output:** Theory memo + assumptions.md + results.md + proofs.md + notation glossary
 
 Workflow:
 1. **Pre-Theory Report (mandatory).** Before writing any math, the Theorist must output a structured report showing what was read:
@@ -211,7 +211,7 @@ Workflow:
 **Strategy memo:** [path or "not found"]
 **Existing paper/draft:** [path or "not found"]
 **Domain profile:** [loaded / not found]
-**Notation conventions:** [header.tex path / domain-profile notation table / "not found"]
+**Notation conventions:** [domain-profile notation table / notation glossary / "not found"]
 **Bibliography base:** [path / "not found"]
 
 **Paper type:** [econometric methods / theory+empirics / structural / methodological reduced-form]
@@ -229,9 +229,9 @@ If strategy memo or paper type is missing, the Theorist flags it and asks before
 2. Read `.claude/references/domain-profile.md` for the Theoretical Foundational References table and Author Team table.
 3. Dispatch **Theorist** to produce:
    - `quality_reports/theory/[topic]/theory_memo.md`
-   - `quality_reports/theory/[topic]/assumptions.tex`
-   - `quality_reports/theory/[topic]/results.tex`
-   - `quality_reports/theory/[topic]/proofs.tex`
+   - `quality_reports/theory/[topic]/assumptions.md`
+   - `quality_reports/theory/[topic]/results.md`
+   - `quality_reports/theory/[topic]/proofs.md`
    - `quality_reports/theory/[topic]/notation_glossary.md`
 4. Dispatch **theorist-critic** to review through 4 sequential phases:
    - Phase 1: Claim identification (object type, target parameter, estimator, assumptions)

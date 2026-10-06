@@ -20,13 +20,13 @@ These standards apply to all Julia code produced by the Coder agent. Derived fro
 | `StatsBase` | Weighted statistics, ECDF |
 | `LinearAlgebra` | Matrix operations |
 | `Random` | RNG management |
-| `PGFPlotsX` or `CairoMakie` | Figures (LaTeX-native or publication quality) |
+| `CairoMakie` (or `Plots.jl`) | Figures — save PNG at 300 dpi for Word/PowerPoint |
 | `Distributed` / `ThreadsX` | Parallelization |
 | `FixedEffectModels` | Panel regression with high-dimensional FE |
 
 ### Preferred Figure Backend
 
-**`PGFPlotsX`** produces native LaTeX/PGF output matching the paper's fonts. `CairoMakie` acceptable for complex layouts.
+**`CairoMakie`** is preferred: `save("paper/figures/fig1.png", fig; px_per_unit = 3)` gives ~300 dpi output. Export tables as CSV of APA-formatted strings to `paper/tables/` — the Word build styles them.
 
 ---
 

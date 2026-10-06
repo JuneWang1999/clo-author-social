@@ -5,6 +5,6 @@
 - AEA journals require no significance stars (INV-4) -- report SEs and CIs instead.
 - Replication README must include computational requirements (runtime, memory). Reviewers test this.
 - Cover letters should be brief (under 1 page). Don't summarize the entire paper.
-- Verify the manuscript compiles from a clean state (delete .aux files first).
+- Word stores author names in document properties and in comments/tracked changes. For masked review, use File › Inspect Document (Windows) or Review › Protect / Preferences › Security › "Remove personal information from this file on save" (Mac) on a copy before uploading.
 - The verifier is pass/fail (0 or 100). There is no partial credit.
 - Don't generate submission materials for a failing paper -- fix the issues first.

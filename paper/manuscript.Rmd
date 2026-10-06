@@ -1,0 +1,107 @@
+---
+# ==============================================================================
+# APA 7 manuscript assembly (draft phase only)
+# ==============================================================================
+# Build:   Rscript paper/build_manuscript.R            -> paper/drafts/manuscript_draft.docx
+# Handoff: Rscript paper/build_manuscript.R --handoff  -> paper/manuscript.docx (MASTER)
+# After handoff, edit paper/manuscript.docx in Word. This file and
+# paper/sections/*.md are no longer the source of truth.
+# Standard: .claude/rules/working-paper-format.md
+# ==============================================================================
+output:
+  word_document:
+    reference_docx: word/apa7-reference.docx
+bibliography: ../Bibliography_base.bib   # exported from Zotero (Better BibTeX: keep updated)
+csl: word/apa.csl
+link-citations: false
+params:
+  title: "[Paper Title in Title Case, About 12 Words or Fewer]"
+  shorttitle: "[RUNNING HEAD, 50 CHARACTERS OR FEWER]"
+  masked: false            # true for masked review: drops authors and author note
+  authors: "[Author One]^1^ and [Author Two]^2^"
+  affiliations:
+    - "^1^[Department of Psychology, University One]"
+    - "^2^[School of Education, University Two]"
+  author_note:
+    - "[Author One] https://orcid.org/0000-0000-0000-0000"
+    - "[Disclosures: preregistration link and deviations; data, materials, and code availability; conflicts of interest; funding.]"
+    - "Correspondence concerning this article should be addressed to [Author One], [address]. Email: [email]"
+  abstract: "[One paragraph, 250 words or fewer (or the journal limit): problem; participants and key characteristics; design and method; main findings with effect sizes and 95% confidence intervals; conclusions and implications.]"
+  keywords: "[keyword one], [keyword two], [keyword three]"
+  sections: ["introduction", "method", "results", "discussion"]
+  appendices: !r character(0)   # e.g., !r c("appendix_a")
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+source(file.path("word", "apa_helpers.R"))
+```
+
+::: {custom-style="Title"}
+\
+:::
+
+::: {custom-style="Title"}
+\
+:::
+
+::: {custom-style="Title"}
+`r params$title`
+:::
+
+::: {custom-style="Author"}
+\
+:::
+
+```{r title-page, results = "asis"}
+if (!isTRUE(params$masked)) {
+  .apa_div("Author", params$authors)
+  for (a in params$affiliations) .apa_div("Author", a)
+  .apa_div("Author", "\\ ")
+  .apa_div("Author", "\\ ")
+  .apa_div("Title Page Label", "Author Note")
+  for (n in params$author_note) .apa_div("Body Text", n)
+}
+apa_page_break()
+```
+
+::: {custom-style="Abstract Title"}
+Abstract
+:::
+
+::: {custom-style="Abstract"}
+`r params$abstract`
+:::
+
+::: {custom-style="Keywords"}
+*Keywords:* `r params$keywords`
+:::
+
+```{r page-break-1, results = "asis"}
+apa_page_break()
+```
+
+::: {custom-style="Title"}
+`r params$title`
+:::
+
+```{r body, results = "asis"}
+for (s in params$sections) apa_section(s)
+apa_page_break()
+```
+
+# References
+
+::: {#refs}
+:::
+
+```{r displays, results = "asis"}
+apa_displays("displays.csv")
+```
+
+```{r appendices, results = "asis"}
+for (s in params$appendices) {
+  apa_page_break()
+  apa_section(s)
+}
+```

@@ -176,7 +176,7 @@ The Orchestrator activates Discovery → Strategy → Execution → Peer Review 
 
 The user invokes a skill directly:
 
-> `/strategize paper/main.tex`
+> `/strategize paper/manuscript.docx`
 
 This runs the strategist-critic agent alone, right now, no phase dependencies.
 
@@ -198,7 +198,7 @@ All skills in the reference below work without pipeline context when invoked dir
 | `/write` | Draft paper sections + humanizer pass |
 | `/review` | Simulated peer review (domain + methods referees) |
 | `/revise` | R&R routing per revision-protocol |
-| `/talk` | Beamer talk from paper |
+| `/talk` | PowerPoint talk from paper |
 | `/submit` | Final gate: score >= 95, all components >= 80 |
 | `/tools` | Utility skills (compile, validate-bib, commit, etc.) |
 

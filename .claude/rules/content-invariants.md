@@ -6,31 +6,31 @@ These are non-negotiable. Every agent checks against them. Violations are deduct
 
 ## Paper
 
-**INV-1.** Every table follows APA 7: number and italic title above (via `\caption{}` placed first), and a note below beginning with *Note.* that explains abbreviations, the sample (*N*, and clusters if nested), the data source, and what is in parentheses or brackets — via `threeparttable` + `tablenotes`.
+**INV-1.** Every table follows APA 7: bold number and italic title above, and a note below beginning with *Note.* that explains abbreviations, the sample (*N*, and clusters if nested), the data source, and what is in parentheses or brackets. In drafts these come from `paper/displays.csv`; in the Word master they are paragraphs in the *Table Number*, *Table Title*, and *Table Note* styles.
 
-**INV-2.** Every figure has an APA number and title above the image (`\caption{}` before `\includegraphics`) and a `\figurenote{}` below explaining what is shown, how to read it (e.g., what error bars represent), and the data source.
+**INV-2.** Every figure has a bold number and italic title above the image and a note below explaining what is shown, how to read it (e.g., what error bars represent), and the data source. In drafts these come from `paper/displays.csv`; in the Word master they use the *Figure Number*, *Figure Title*, and *Figure Note* styles.
 
-**INV-3.** No `\hline` — use `\toprule`, `\midrule`, `\bottomrule` (booktabs). No vertical rules. No shading or cell borders.
+**INV-3.** Tables use horizontal rules only — above and below the column heads, below the body, and under spanner heads. No vertical rules, full grid borders, or shading (`apa_flextable()` enforces this).
 
 **INV-4.** Statistics are reported in APA style. Exact *p* values to two or three decimals (*p* = .031; *p* < .001 below that), never "*p* = .000" or "n.s." alone. Every primary result reports an effect size (e.g., *d*, *g*, $\eta^2_p$, $\omega^2$, *r*, standardized $\beta$, odds ratio) with a 95% confidence (or credible) interval in brackets: 95% CI [0.12, 0.45]. Test statistics are italicized with degrees of freedom: *t*(48) = 2.31, *F*(2, 117) = 4.56, $\chi^2$(3, *N* = 412) = 9.80. No leading zero for statistics that cannot exceed 1 (*p*, *r*, $\alpha$, $\omega$, $R^2$, proportions). Significance asterisks appear only if the journal profile allows them, and then only with a probability note defining every threshold.
 
 **INV-5.** Abstract is 250 words or fewer (APA 7 default), or the target journal's limit if stricter.
 
-**INV-6.** 3–5 keywords present via `\keywords{}` (lowercase except proper nouns). No JEL codes. When the target journal requires a public significance or impact statement, it exists (see the journal profile).
+**INV-6.** 3–5 keywords present on a `Keywords:` line after the abstract (lowercase except proper nouns). No JEL codes. When the target journal requires a public significance or impact statement, it exists (see the journal profile).
 
 **INV-7.** Notation is consistent across all sections — the same symbol means the same thing everywhere. Different concepts get different symbols.
 
 **INV-8.** Every causal claim has a corresponding design justification (randomization, or a named quasi-experimental design with its assumptions defended). No causal language ("effect of," "leads to," "improves," "reduces") for correlational, cross-sectional, or longitudinal-observational findings — use "is associated with," "predicts," or "covaries with." Mediation estimated from non-experimental or single-time-point data is not described as a causal mechanism.
 
-**INV-9.** `biblatex` with `style=apa` (biblatex-apa) + `biber`. Not `natbib`, `apacite`, or `bibtex`. Citations use `\textcite{}` / `\parencite{}`.
+**INV-9.** References come from Zotero via `Bibliography_base.bib` and are formatted by pandoc with `paper/word/apa.csl` (draft phase) or the Zotero Word plugin (Word-master phase). No hand-typed reference lists. Every in-text citation appears in the References section and every reference is cited.
 
-**INV-10.** `hyperref` loaded second-to-last in preamble; `cleveref` loaded immediately after it.
+**INV-10.** Tables and figures are numbered separately in order of first mention, and each is called out in the text ("Table 1", "Figure 2") before it appears.
 
 **INV-11.** Numbers in text match the tables and figures exactly. No rounding discrepancies, no stale values.
 
-**INV-12.** No titles inside ggplot/matplotlib figures. Titles go in LaTeX `\caption{}`. Panel labels ("Panel A: ...") inside multi-panel figures are fine.
+**INV-12.** No titles inside ggplot/matplotlib figures. The number and title go above the image in the manuscript. Panel labels ("Panel A: ...") inside multi-panel figures are fine.
 
-**INV-13.** R/Python/Julia scripts export bare `tabular` environments — no `\begin{table}`, `\caption{}`, or notes. The paper's `main.tex` wraps them.
+**INV-13.** R/Python/Julia scripts export tables as styled flextable objects (`apa_save_table()` → `paper/tables/<name>.rds` + `.docx` preview) with no number, title, or note, and figures as PNG (≥ 300 dpi) with no title. The manuscript adds numbers, titles, and notes.
 
 ## Code
 
@@ -62,14 +62,16 @@ These are non-negotiable. Every agent checks against them. Violations are deduct
 
 **INV-24.** Language about people is bias-free and specific (APA 7 Chapter 5): "participants" or the specific role (students, teachers), not "subjects"; person-first or identity-first wording as preferred by the community described; specific racial/ethnic labels, capitalized (Black, White, Latinx/Hispanic as reported by participants); singular "they" for unspecified gender; age groups described specifically ("adults aged 65–80 years") rather than "the elderly"; report how demographic categories were collected.
 
+**INV-25.** The Word master is never overwritten. Once `paper/manuscript.docx` exists (or a talk's `.pptx`), agents read it through a snapshot and propose changes as a change list or a separate revised copy (see `working-paper-format.md`, The Master-Copy Rule).
+
 ---
 
 ## How Agents Use This File
 
 | Agent | Checks | Action on Violation |
 |-------|--------|-------------------|
-| **writer-critic** | INV-1 through INV-13, INV-22, INV-23, INV-24 | Deduct per scoring rubric |
+| **writer-critic** | INV-1 through INV-13, INV-22 through INV-25 | Deduct per scoring rubric |
 | **coder-critic** | INV-13 through INV-19 | Deduct per scoring rubric |
-| **storyteller-critic** | INV-20, INV-21 | Deduct per scoring rubric |
-| **verifier** | INV-9, INV-10, INV-14, INV-15, INV-16, INV-19 | FAIL if present |
+| **storyteller-critic** | INV-20, INV-21, INV-25 | Deduct per scoring rubric |
+| **verifier** | INV-9, INV-10, INV-14, INV-15, INV-16, INV-19, INV-25 | FAIL if present |
 | **lint hook** | INV-14, INV-15, INV-16, INV-19 | Advisory warning |

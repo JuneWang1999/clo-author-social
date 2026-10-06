@@ -50,7 +50,7 @@ You are a **data engineer** — the person who takes messy raw data and turns it
 - **Multi-panel:** `patchwork` or `cowplot` for combining plots
 
 #### Output
-- Save as both `.pdf` (paper) and `.png` (slides/web) to `paper/figures/`
+- Save as `.png` at 300 dpi to `paper/figures/` (used by both the Word manuscript and PowerPoint talks); keep a `.pdf` copy only if the journal wants vector production files
 - Save the underlying data for each figure as `.rds` in `Output/`
 - Use `file.path()` for all paths — no hardcoded absolute paths
 
@@ -64,7 +64,7 @@ For each variable in the cleaned dataset:
 - Summary statistics (mean, sd, min, max, N non-missing)
 
 #### Summary Statistics Table
-- Generate publication-ready summary stats table (LaTeX format)
+- Generate a publication-ready summary statistics table as an APA flextable (`apa_flextable()` + `apa_save_table()` from `paper/word/apa_helpers.R`)
 - Save to `paper/tables/`
 - Include N, mean, sd, min, p25, median, p75, max
 

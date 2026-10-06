@@ -77,7 +77,7 @@ python3 scripts/generate_dashboard.py
 | Resource | Path | When |
 |----------|------|------|
 | Submission checklist | `templates/submission-checklist.md` | `/submit final` — pre-submission verification |
-| Cover letter | `templates/cover-letter.tex` | `/submit final` — draft cover letter |
+| Cover letter | `templates/cover-letter.md` | `/submit final` — draft cover letter (build to .docx with `paper/word/letter-reference.docx`) |
 | Replication README | `templates/replication-readme.md` | `/submit package` — AEA-compliant README |
 | Audit checklist | `templates/audit-10-checks.md` | `/submit audit` — verifier submission mode |
 | Gotchas | `gotchas.md` | Always — known failure points |

@@ -1,7 +1,6 @@
 # CLAUDE.MD -- Empirical Psychology & Education Research with Claude Code
 
 <!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
-     Customize Beamer environments for your talk preamble.
      Keep this file under ~150 lines — Claude loads it every session.
      See the guide at https://hugosantanna.github.io/clo-author/ for full documentation. -->
 
@@ -16,7 +15,7 @@
 
 - **Plan first** -- enter plan mode before non-trivial tasks; save plans to `quality_reports/plans/`
 - **Verify after** -- compile and confirm output at the end of every task
-- **Single source of truth** -- Paper `main.tex` is authoritative; talks and supplements derive from it
+- **Single source of truth** -- the paper is authoritative; talks and supplements derive from it. Drafts live in `paper/sections/*.md` until handoff; after that `paper/manuscript.docx` (edited by you in Word) is the master and agents never overwrite it — they propose changes
 - **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `quality.md`
 - **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
 - **Auto-memory** -- corrections and preferences are saved automatically via Claude Code's built-in memory system
@@ -38,15 +37,19 @@
 ├── CLAUDE.MD                    # This file
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib        # Centralized bibliography
-├── paper/                       # Main LaTeX manuscript (source of truth)
-│   ├── main.tex                 # Primary paper file
-│   ├── sections/                # Section-level .tex files
-│   ├── figures/                 # Generated figures (.pdf, .png)
-│   ├── tables/                  # Generated tables (.tex)
-│   ├── talks/                   # Beamer presentations
-│   ├── quarto/                  # Quarto RevealJS presentations
-│   ├── preambles/               # LaTeX headers / shared preamble
-│   ├── supplementary/           # Online appendix and supplements
+├── paper/                       # Manuscript (APA 7, Microsoft Word)
+│   ├── manuscript.docx          # MASTER after handoff — you edit it in Word
+│   ├── manuscript.Rmd           # Draft assembly: title page, abstract, section order
+│   ├── build_manuscript.R       # Draft build (+ --handoff, once)
+│   ├── displays.csv             # Table/figure numbers, titles, notes
+│   ├── sections/                # Draft sections (.md) — before handoff only
+│   ├── drafts/                  # Draft builds (overwritten freely)
+│   ├── revisions/               # Revised copies to merge via Word's Review › Compare
+│   ├── word/                    # APA reference .docx, apa.csl, R helpers
+│   ├── figures/                 # Generated figures (.png, 300 dpi)
+│   ├── tables/                  # Generated tables (.rds/.csv + .docx previews)
+│   ├── talks/                   # PowerPoint talks (.md source → .pptx)
+│   ├── supplementary/           # Online supplement
 │   └── replication/             # Replication package for deposit
 ├── data/                        # Project data
 │   ├── raw/                     # Original untouched data (often gitignored)
@@ -63,20 +66,23 @@
 ## Commands
 
 ```bash
-# Paper compilation (latexmk handles multi-pass + biber automatically)
-cd paper && latexmk main.tex
+# Manuscript draft (before handoff): Markdown sections -> APA Word file
+Rscript paper/build_manuscript.R              # -> paper/drafts/manuscript_draft.docx
+Rscript paper/build_manuscript.R --handoff    # once: create paper/manuscript.docx (master)
 
-# Talk compilation
-cd paper/talks && latexmk talk.tex
+# Read / check the Word master (read-only)
+.claude/scripts/docx_snapshot.sh paper/manuscript.docx
+python3 .claude/scripts/check_docx_format.py paper/manuscript.docx
 
-# Clean auxiliary files
-cd paper && latexmk -c
+# Talks: Markdown slides -> PowerPoint
+paper/talks/build_talk.sh <name>              # -> paper/talks/drafts/<name>_draft.pptx
+paper/talks/build_talk.sh <name> --handoff    # once: create paper/talks/<name>.pptx
 ```
 
-> **Note:** Papers are APA 7 manuscripts (`apa7` class, `man` mode, biblatex-apa + biber) — see
-> `.claude/rules/working-paper-format.md`; start from `templates/latex/apa7-main.tex`.
-> `paper/latexmkrc` configures pdfLaTeX, biber, TEXINPUTS, and BIBINPUTS.
-> On Overleaf, set compiler to pdfLaTeX via Menu > Compiler — Overleaf reads `latexmkrc` automatically.
+> **Note:** Papers are APA 7 manuscripts in Word — see `.claude/rules/working-paper-format.md`.
+> Needs R (`rmarkdown`, `knitr`, `flextable`, `officer`) and pandoc; no LaTeX.
+> References: export your Zotero collection to `Bibliography_base.bib` (Better BibTeX › Keep updated recommended).
+> After handoff, agents send proposed edits as change lists in `quality_reports/revisions/`; apply them in Word with Track Changes on.
 
 ---
 
@@ -104,21 +110,16 @@ See `quality.md` for weighted aggregation formula.
 | `/write [section]` | Draft paper sections + humanizer pass (`style-guide` mode extracts voice from prior papers) |
 | `/review [file/--flag]` | Quality reviews (routes by target: paper, code, peer) |
 | `/revise [report]` | R&R cycle: classify + route referee comments |
-| `/talk [mode] [format]` | Create, audit, or compile Beamer presentations |
+| `/talk [mode] [format]` | Create, audit, or build PowerPoint presentations |
 | `/submit [mode]` | Journal targeting → package → audit → final gate |
 | `/tools [subcommand]` | Utilities: commit, compile, validate-bib, journal, etc. |
 | `/checkpoint [--flag]` | Session handoff: memory + SESSION_REPORT + research journal (+ Obsidian if configured) |
 
 ---
 
-<!-- CUSTOMIZE: Replace the example entries below with your own
-     Beamer environments for talks. -->
+## Talk Design
 
-## Beamer Custom Environments (Talks)
-
-| Environment       | Effect        | Use Case       |
-|-------------------|---------------|----------------|
-| `[your-env]`      | [Description] | [When to use]  |
+Slide design (fonts, colors, layouts) comes from `paper/talks/reference.pptx`. Replace it with your institution's template — keep the layout names — to restyle every talk.
 
 ---
 
@@ -127,8 +128,8 @@ See `quality.md` for weighted aggregation formula.
 <!-- Options: by-script (default) or by-purpose -->
 Output organization: by-script
 
-<!-- by-script:  paper/figures/main_regression/figure1.pdf, paper/tables/main_regression/table1.tex -->
-<!-- by-purpose: paper/figures/estimation/coefplot_main.pdf, paper/tables/robustness/alt_controls.tex -->
+<!-- by-script:  paper/figures/main_regression/figure1.png, paper/tables/main_regression/table1.rds -->
+<!-- by-purpose: paper/figures/estimation/coefplot_main.png, paper/tables/robustness/alt_controls.rds -->
 
 ---
 
@@ -136,7 +137,7 @@ Output organization: by-script
 
 | Component | File | Status | Description |
 |-----------|------|--------|-------------|
-| Paper | `paper/main.tex` | [draft/submitted/R&R] | [Brief description] |
+| Paper | `paper/manuscript.docx` (master) or `paper/sections/` (draft) | [draft/handed off/submitted/R&R] | [Brief description] |
 | Data | `scripts/R/` | [complete/in-progress] | [Analysis description] |
 | Replication | `paper/replication/` | [not started/ready] | [Deposit status] |
-| Job Market Talk | `paper/talks/job_market_talk.tex` | -- | [Status] |
+| Job Market Talk | `paper/talks/job_market_talk.pptx` | -- | [Status] |

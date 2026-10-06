@@ -4,11 +4,11 @@ The verifier runs in two modes. Standard mode (checks 1-4) runs between phase tr
 
 ## Standard Checks (Always Run)
 
-### 1. LaTeX Compilation
-- Paper compiles cleanly via `latexmk`
-- No undefined citations
-- Count overfull `\hbox` warnings
-- PDF generated successfully
+### 1. Manuscript Format (Word)
+- `python3 .claude/scripts/check_docx_format.py paper/manuscript.docx --abstract-limit <journal limit>` reports no FAIL
+- Every in-text citation has a reference entry and vice versa (read the snapshot)
+- No unresolved comments or pending tracked changes in the file to be submitted (report; the user resolves them)
+- A PDF export from Word (File › Save As › PDF) opens and shows every table and figure, if the journal wants a PDF too
 
 ### 2. Script Execution
 - All scripts run without errors
@@ -62,8 +62,9 @@ The verifier runs in two modes. Standard mode (checks 1-4) runs between phase tr
 ## Content Invariants Checked
 
 The verifier also enforces these invariants (any violation is FAIL):
-- INV-9: `biblatex` + `biber`, not `natbib` + `bibtex`
-- INV-10: `hyperref` loaded second-to-last; `cleveref` after
+- INV-9: references from Zotero/.bib via APA CSL or the Zotero plugin; citations and reference list match
+- INV-10: tables/figures numbered in order of first mention and all called out
+- INV-25: the pipeline never modified `paper/manuscript.docx`
 - INV-14: `set.seed()` exactly once at top if stochastic
 - INV-15: All packages loaded at top
 - INV-16: No absolute paths

@@ -39,7 +39,7 @@ Enter at any stage. Use `/new-project` for the full pipeline.
 | `/write [section]` | Draft paper sections + humanizer pass |
 | `/review [file]` | Multi-agent quality review + weighted score |
 | `/revise [report]` | Route referee comments, draft response letter |
-| `/talk [format]` | Beamer presentation from paper (4 formats) |
+| `/talk [format]` | PowerPoint presentation from paper (4 formats) |
 | `/submit [journal]` | Final gate: score >= 95, all components >= 80 |
 | `/tools [subcommand]` | commit, compile, validate-bib, journal, learn, deploy, context |
 

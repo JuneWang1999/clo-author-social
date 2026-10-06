@@ -100,14 +100,15 @@ Extracted from `coder-critic.md`. Used by the coder-critic agent for code review
 ### 11. Figure Quality
 - Consistent color palette across all figures
 - Custom ggplot2 theme (not default gray)
-- Serif font for paper figures (`family = "serif"`)
-- No titles inside ggplot -- titles go in LaTeX `\caption{}`
-- Readable axis labels (publication quality, not variable names)
-- PDF output via `ggsave()` with explicit dimensions
+- Sans serif font inside figures (APA; `base_family = "sans"`)
+- No titles inside ggplot -- titles go in `paper/displays.csv` (INV-12)
+- Readable axis labels (publication quality, title case, units)
+- PNG output at ≥ 300 dpi via `ggsave(..., dpi = 300, bg = "white")` with explicit dimensions
 
 ### 12. Table Quality
-- Bare `tabular` output (no `\begin{table}` wrapper)
-- Three-line format: `\toprule`, `\midrule`, `\bottomrule`
+- Tables saved with `apa_save_table()` (`.rds` + `.docx` preview) or as formatted `.csv` (Python/Julia); no number, title, or note inside (INV-13)
+- `apa_flextable()` styling: horizontal rules only, no vertical rules or grid (INV-3)
+- Values formatted with `apa_num()` / `apa_p()` / `apa_ci()` — not raw console precision
 - Human-readable variable labels
 - Table statistics follow APA (INV-4): exact *p*, effect sizes with 95% CIs, no stars unless the journal profile allows them
 - Standard errors labeled in notes

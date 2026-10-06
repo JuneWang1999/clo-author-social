@@ -1,227 +1,127 @@
-# Table Standards (APA 7)
+# Table Standards (APA 7, Word)
 
 Mirror of `.claude/rules/content-standards.md` Section 1 for the coder. If the two ever differ, `content-standards.md` wins.
 
-**Target:** APA 7 tables (*Publication Manual*, §7.8–7.21): horizontal booktabs rules only, number and title above, notes below. The paper uses `tabular` + `booktabs` + `threeparttable` inside the `apa7` class, which formats the caption (bold "Table 1", italic title on the next line) automatically.
+**Target:** APA 7 tables in Word (*Publication Manual*, §7.8–7.21): bold number and italic title above, horizontal rules only, notes below. Analysis scripts build each table as a **flextable** styled with `apa_flextable()` (`paper/word/apa_helpers.R`) and save it with `apa_save_table()`. The manuscript build adds the number, title, and note from `paper/displays.csv`.
 
-Journal-specific conventions (asterisks, float placement) adapt to the target journal — see journal-profiles.md. Statistical reporting rules are in INV-4.
+Journal-specific conventions (asterisks, table placement) adapt to the target journal — see journal-profiles.md. Statistical reporting rules are in INV-4.
 
 ## No In-Table Titles or Notes
 
-- **Never** embed titles inside the table body or as a table header row
-- **Never** embed notes, sources, or footnotes inside the table itself
-- Number and title come from `\caption{}` (placed first); notes from `\begin{tablenotes}` below the tabular
-- The file name and folder identify what the table contains
+- **Never** put the title in the table body or as a header row
+- **Never** put notes, sources, or footnotes inside the table
+- Number, title, and note live in `paper/displays.csv` (draft) or in the *Table Number* / *Table Title* / *Table Note* paragraphs (Word master)
+- The file name identifies what the table contains
+
+## Building a Table in R
+
+```r
+source(here::here("paper", "word", "apa_helpers.R"))
+
+tab <- data.frame(
+  Predictor = c("Intercept", "Treatment", "Pretest"),
+  b         = apa_num(c(50.12, 1.94, 0.61)),
+  SE        = apa_num(c(0.88, 0.65, 0.04)),
+  CI        = apa_ci(c(48.39, 0.67, 0.53), c(51.85, 3.21, 0.69)),
+  beta      = c("", apa_num(c(.19, .58), leading_zero = FALSE)),
+  p         = apa_p(c(1e-6, .003, 1e-6))
+)
+
+ft <- apa_flextable(tab)
+ft <- flextable::set_header_labels(ft, b = "b", SE = "SE", CI = "95% CI", beta = "β", p = "p")
+ft <- flextable::italic(ft, j = c("b", "SE", "p"), part = "header")   # statistical symbols italic
+apa_save_table(ft, "reg_main_specification", dir = here::here("paper", "tables"))
+```
+
+- `apa_flextable()` sets Times New Roman 12, single-spaced cells, centered numeric columns with a left-aligned first column, and the three APA rules
+- `apa_spanner(ft, labels, widths)` adds a spanner row with rules under the spanned columns (e.g., "Treatment" over *M* and *SD*)
+- `apa_save_table()` writes `paper/tables/<name>.rds` (used by the build) and `<name>.docx` (a preview you can open in Word)
+- Model output: build the data frame from `broom::tidy()`, `parameters::model_parameters()`, or `modelsummary(..., output = "data.frame")`, then format with `apa_num()` / `apa_p()` / `apa_ci()` before `apa_flextable()`
 
 ## APA Table Layout
 
-Exactly three horizontal rules plus optional `\cmidrule` spanners, and **zero vertical lines**:
-
-```latex
-\begin{table}[tbp]
-\begin{threeparttable}
-\caption{Multilevel Model Predicting Posttest Science Achievement}
-\label{tab:main}
-\input{tables/estimation/reg_main_specification.tex}
-\begin{tablenotes}[para, flushleft]
-{\small
-\textit{Note.} $N = 1{,}204$ students in 48 classrooms. Estimates are unstandardized
-fixed effects from a two-level random-intercept model; standardized estimates
-($\beta$) use the pooled posttest standard deviation. CI = confidence interval.
-}
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-```
-
-- `\toprule` above column headers, `\midrule` below them, `\bottomrule` at the end
-- `\cmidrule(lr){2-4}` for spanners over column groups
-- Note order: general note (`\textit{Note.}`), then specific notes (superscript lowercase letters, `\textsuperscript{a}`), then probability note
-- **Never** `\hline`, `|` in column specs, shading, or cell borders
+- Rules: above the column heads, below the column heads, below the body; under spanner heads only across the spanned columns
+- **Never** vertical rules, full grid borders, shading, or bold body text
+- Note order below the table: general note (*Note.*), specific notes (superscript lowercase letters), probability note
+- Wide tables: landscape page in Word (Layout › Orientation on a section) rather than shrinking the font below 10 pt
 
 ## Statistical Reporting in Tables
 
 | Element | APA convention |
 |---------|----------------|
-| Column heads | Italicized statistical symbols: *M*, *SD*, *n*, *b*, *SE*, $\beta$, *t*, *p*, *d*, *r*, *F*, $\eta^2_p$ |
-| Confidence intervals | Brackets, lower and upper limits: [0.12, 0.45]; or separate *LL* / *UL* columns under a "95% CI" spanner |
+| Column heads | Italicized statistical symbols: *M*, *SD*, *n*, *b*, *SE*, β, *t*, *p*, *d*, *r*, *F*, η²p |
+| Confidence intervals | Brackets, lower and upper limits: [0.12, 0.45] (`apa_ci()`); or separate *LL* / *UL* columns under a "95% CI" spanner |
 | Decimals | Two decimals by default; three for *p* values; consistent within a column |
-| Leading zeros | Omit for values that cannot exceed 1 (*p*, *r*, $R^2$, $\alpha$, $\omega$, proportions): .45, not 0.45 |
-| *p* values | Exact (.031); "< .001" below .001; never .000 |
-| Asterisks | Only if the journal profile permits. Then define every symbol in a probability note: `\textsuperscript{*}$p < .05$. \textsuperscript{**}$p < .01$. \textsuperscript{***}$p < .001$.` Prefer an exact *p* column. |
+| Leading zeros | Omit for values that cannot exceed 1 (*p*, *r*, *R*², α, ω, proportions): .45, not 0.45 (`apa_num(x, leading_zero = FALSE)`) |
+| *p* values | Exact (.031); "< .001" below .001; never .000 (`apa_p()`) |
+| Asterisks | Only if the journal profile permits; define every symbol in a probability note. Prefer an exact *p* column |
 | Nested data | State levels and counts in the note (students, classrooms, schools); report variance components / ICC |
 | Sample size | In the note, and per column if *n* varies |
 
-Example rows (unstandardized estimate, SE, CI, standardized estimate, exact *p*):
-```
-Treatment          & 0.21 & 0.07 & [0.07, 0.35] & .18 & .004 \\
-Pretest            & 0.62 & 0.04 & [0.54, 0.70] & .59 & < .001 \\
-```
-
 ## Column and Row Structure
 
-- **Variable names** human-readable, not raw code names: `Pretest science score` not `pre_sci_z`; `Female` not `sex_2`
-- **Numeric columns** decimal-aligned (`siunitx` `S` columns) or centered
-- Model-fit rows at the bottom: *N* (and clusters), $R^2$ or marginal/conditional $R^2$, ICC, AIC/BIC, or $\chi^2$, CFI, TLI, RMSEA [90% CI], SRMR for latent variable models
-- Panel labels (`\multicolumn{k}{l}{\textit{Panel A: Grade 6}}`) are fine for multi-outcome tables
+- **Variable names** human-readable, not code names: "Pretest science score" not `pre_sci_z`
+- Model-fit rows at the bottom: *N* (and clusters), *R*² or marginal/conditional *R*², ICC, AIC/BIC, or χ², CFI, TLI, RMSEA [90% CI], SRMR for latent variable models
+- Panel labels ("Panel A: Grade 6") as italic rows spanning all columns are fine
 
 ## Preferred R Packages
 
-**Model tables: `modelsummary`** (bare tabular, no stars by default)
-
-```r
-library(modelsummary)
-
-modelsummary(
-  models,
-  output    = "latex_tabular",            # bare tabular, no wrapper
-  statistic = c("std.error", "conf.int"),
-  conf_level = 0.95,
-  stars     = FALSE,                      # APA default; set per journal profile
-  fmt       = 2,
-  coef_rename = c("treatment" = "Treatment", "pretest" = "Pretest"),
-  gof_map   = c("nobs", "r2.marginal", "r2.conditional", "icc"),
-  escape    = FALSE
-)
-```
-
-**In-text statistics strings: `papaja::apa_print()`** — produces APA-formatted strings (*t*(48) = 2.31, *p* = .025, *d* = 0.66, 95% CI [0.08, 1.23]) from model objects. Write them to `quality_reports/results_summary.md` so the writer copies numbers rather than retyping them (INV-11, INV-22).
-
-**Effect sizes: `effectsize`** (Cohen's *d*, Hedges' *g*, $\eta^2_p$, $\omega^2$ with CIs). **Descriptives/correlation matrices:** `apaTables` or `modelsummary::datasummary_correlation()`. **Latent variable models:** `lavaan` + `semTools` (fit indices, invariance tests, $\omega$ reliability).
-
-**Descriptive tables: `kableExtra`**
-
-```r
-library(kableExtra)
-
-kbl(df, format = "latex", booktabs = TRUE, escape = FALSE,
-    align = c("l", rep("c", ncol(df) - 1)))
-```
-
-## Typography
-
-- Body font inherits from the class — no extra commands
-- `\small` acceptable inside tables when needed; use `landscape` for wide tables rather than going below `\small`
-- Statistical symbols italic (Greek letters upright as typeset in math mode)
-- Never bold table body content
-
-## Export
-
-```r
-# Write .tex fragment (no \begin{table} wrapper -- added in main.tex)
-writeLines(tex_output, file.path("paper/tables", "reg_main_specification.tex"))
-```
-
-- Output a **bare `tabular` environment** (no `\begin{table}` float, caption, or notes)
-- `main.tex` wraps it with `\begin{table}`, `\caption{}`, `threeparttable`, and notes
-- Write to `paper/tables/`
+| Purpose | Package |
+|---------|---------|
+| Table objects for Word | `flextable` (+ `officer`) with `apa_flextable()` |
+| Tidy model output | `broom`, `broom.mixed`, `parameters`, `modelsummary(output = "data.frame")` |
+| Effect sizes with CIs | `effectsize` (Cohen's *d*, Hedges' *g*, η²p, ω²) |
+| APA in-text strings | `papaja::apa_print()` — copy its strings into `quality_reports/results_summary.md` so the writer never retypes numbers (INV-11, INV-22) |
+| Descriptives / correlations | `apaTables`, `modelsummary::datasummary_correlation(output = "data.frame")` |
+| APA-styled flextables in one call | `rempsyc::nice_table()` (acceptable alternative to `apa_flextable()`) |
+| Latent variable models | `lavaan` + `semTools` (fit indices, invariance tests, ω) |
 
 ## File Naming
 
 ```
 tables/
-├── descriptive/
-│   ├── sumstats_correlations.tex
-│   └── balance_baseline_equivalence.tex
-├── measurement/
-│   ├── cfa_fit_indices.tex
-│   └── invariance_by_grade.tex
-├── estimation/
-│   ├── reg_main_specification.tex
-│   └── mlm_moderation_prior_achievement.tex
-└── robustness/
-    └── reg_alternative_missing_data.tex
+├── sumstats_correlations.rds / .docx
+├── balance_baseline_equivalence.rds / .docx
+├── cfa_fit_indices.rds / .docx
+├── reg_main_specification.rds / .docx
+└── reg_alternative_missing_data.rds / .docx
 ```
 
-Pattern: `{table_type}_{content_description}.tex`
-
-- `sumstats_` descriptives and correlations; `balance_` baseline equivalence; `cfa_` / `invariance_` measurement models
-- `reg_` / `mlm_` / `sem_` model output; `anova_` ANOVA tables; `meta_` meta-analytic summaries
+Pattern: `{table_type}_{content_description}`. Prefixes: `sumstats_`, `balance_`, `cfa_` / `invariance_`, `reg_` / `mlm_` / `sem_`, `anova_`, `meta_`. Subfolders (descriptive/, estimation/, robustness/) are fine; record the path in `displays.csv`.
 
 ## Prohibited Patterns
 
 | Pattern | Reason |
 |---------|--------|
-| Title row inside the table | Titles go in `\caption{}` |
-| Notes embedded in table body | Notes go below via `tablenotes` |
-| Caption after the tabular | APA places number and title above |
-| `\hline` / vertical rules | booktabs horizontal rules only |
+| Title or note inside the table | They belong in `displays.csv` / the manuscript |
+| Number and title below the table | APA places them above |
+| Vertical rules or full grid | Horizontal rules only (INV-3) |
+| Tables pasted as images | Journals and reviewers need editable tables |
+| Tables typed by hand in Word from console output | Breaks traceability (INV-11, INV-22); generate them from code |
 | "*p* = .000" or "n.s." without statistics | Report exact *p* (or < .001) and the statistic |
 | Leading zero on bounded statistics (0.45 for *r*) | APA 7 §6.36 |
 | Asterisks without a probability note | Every symbol must be defined |
-| `stargazer` | Deprecated workflow; use `modelsummary` |
 | Raw variable names in labels | Human-readable labels required |
-| `\begin{table}` in R output | Float wrapper lives in `main.tex` (INV-13) |
 
 ## Table Type Templates
 
-Adapt columns to the paper's needs.
+Adapt columns to the paper's needs. Layouts shown as rows (columns separated by `|`).
 
 **Descriptive Statistics and Correlations** (the standard first table in psychology/education):
-```
-\toprule
-Variable                 & \textit{M} & \textit{SD} & 1     & 2     & 3     \\
-\midrule
-1. Pretest achievement   & 48.2 & 9.6  & (.91) &       &       \\
-2. Self-efficacy         & 3.42 & 0.71 & .38   & (.87) &       \\
-3. Posttest achievement  & 52.7 & 10.1 & .64   & .41   & (.92) \\
-\bottomrule
-```
-- Reliabilities ($\omega$ or $\alpha$, say which) in parentheses on the diagonal, explained in the note
-- Correlations without leading zeros; state *N* and how missing data were handled in the note
-- Binary variables: percentage in the *M* column, *SD* blank, noted
 
-**Regression / Multilevel Model Results:**
-```
-\toprule
-                 &      &       &                & \multicolumn{2}{c}{Standardized} \\
-\cmidrule(lr){5-6}
-Predictor        & \textit{b} & \textit{SE} & 95\% CI       & $\beta$ & \textit{p} \\
-\midrule
-\multicolumn{6}{l}{\textit{Fixed effects}} \\
-Intercept        & 50.12 & 0.88 & [48.39, 51.85] &        & < .001 \\
-Treatment        & 1.94  & 0.65 & [0.67, 3.21]   & .19    & .003   \\
-Pretest          & 0.61  & 0.04 & [0.53, 0.69]   & .58    & < .001 \\
-\midrule
-\multicolumn{6}{l}{\textit{Random effects}} \\
-Classroom intercept variance & 4.21 & & & & \\
-Residual variance            & 52.80 & & & & \\
-\midrule
-ICC              & .07 & & & & \\
-\bottomrule
-```
+| Variable | *M* | *SD* | 1 | 2 | 3 |
+|----------|-----|------|---|---|---|
+| 1. Pretest achievement | 48.2 | 9.6 | (.91) | | |
+| 2. Self-efficacy | 3.42 | 0.71 | .38 | (.87) | |
+| 3. Posttest achievement | 52.7 | 10.1 | .64 | .41 | (.92) |
 
-**ANOVA:**
-```
-\toprule
-Source               & \textit{df} & \textit{F} & \textit{p} & $\eta^2_p$ & 95\% CI     \\
-\midrule
-Condition            & 2, 117 & 4.56 & .012 & .07 & [.01, .15] \\
-Time                 & 1, 117 & 21.40 & < .001 & .15 & [.06, .26] \\
-Condition $\times$ Time & 2, 117 & 3.12 & .048 & .05 & [.00, .12] \\
-\bottomrule
-```
+- Reliabilities (ω or α — say which) in parentheses on the diagonal, explained in the note
+- Correlations without leading zeros; state *N* and missing-data handling in the note
 
-**Baseline Equivalence** (randomized and quasi-experimental studies; WWC convention):
-```
-\toprule
-Variable           & \multicolumn{2}{c}{Treatment} & \multicolumn{2}{c}{Comparison} & \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}
-                   & \textit{M} & \textit{SD} & \textit{M} & \textit{SD} & Hedges' \textit{g} \\
-\midrule
-Pretest            & 48.6 & 9.4 & 47.9 & 9.8 & 0.07 \\
-Free/reduced lunch (\%) & 41.2 & & 43.5 & & -0.05 \\
-\bottomrule
-```
-- Report standardized differences; |*g*| > 0.25 fails WWC baseline equivalence, 0.05–0.25 requires statistical adjustment
+**Regression / Multilevel Model Results:** Predictor | *b* | *SE* | 95% CI | β | *p*, with italic panel rows "Fixed effects" and "Random effects" (classroom intercept variance, residual variance) and an ICC row.
 
-**Measurement Model Fit / Invariance:**
-```
-\toprule
-Model        & $\chi^2$ & \textit{df} & CFI & TLI & RMSEA [90\% CI]  & SRMR & $\Delta$CFI \\
-\midrule
-Configural   & 312.4 & 164 & .962 & .956 & .047 [.039, .055] & .041 & --    \\
-Metric       & 330.9 & 176 & .960 & .957 & .046 [.038, .054] & .049 & -.002 \\
-Scalar       & 371.2 & 188 & .952 & .951 & .049 [.042, .057] & .053 & -.008 \\
-\bottomrule
-```
+**ANOVA:** Source | *df* | *F* | *p* | η²p | 95% CI.
+
+**Baseline Equivalence** (WWC convention): Variable | Treatment *M* | *SD* | Comparison *M* | *SD* | Hedges' *g*, with spanners "Treatment" and "Comparison". |*g*| > 0.25 fails WWC baseline equivalence; 0.05–0.25 requires statistical adjustment.
+
+**Measurement Model Fit / Invariance:** Model | χ² | *df* | CFI | TLI | RMSEA [90% CI] | SRMR | ΔCFI, rows Configural / Metric / Scalar.

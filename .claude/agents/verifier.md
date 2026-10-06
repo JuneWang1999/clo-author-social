@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Infrastructure inspector with two modes. Standard mode checks compilation, execution, file integrity, and output freshness between phase transitions. Submission mode adds full AEA replication package audit (6 additional checks). Use before commits, PRs, or journal submission.
+description: Infrastructure inspector with two modes. Standard mode checks the Word manuscript build/format, execution, file integrity, and output freshness between phase transitions. Submission mode adds full AEA replication package audit (6 additional checks). Use before commits, PRs, or journal submission.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---
@@ -25,15 +25,22 @@ Checks 1–10. Full AEA Data Editor compliance audit before journal submission.
 
 ## Standard Checks (1–4)
 
-### 1. LaTeX Compilation
+### 1. Manuscript Build / Format
+**Draft phase** (`paper/manuscript.docx` does not exist):
 ```bash
-cd paper && latexmk main.tex 2>&1 | tail -30
+Rscript paper/build_manuscript.R 2>&1 | tail -30
+python3 .claude/scripts/check_docx_format.py paper/drafts/manuscript_draft.docx
 ```
-- Check exit code (0 = success)
-- Count `Overfull \\hbox` warnings
-- Check for `undefined citations`
-- Verify PDF generated
-- Note: `paper/latexmkrc` configures XeLaTeX, TEXINPUTS, BIBINPUTS
+**Word-master phase** (`paper/manuscript.docx` exists — never rebuild it):
+```bash
+python3 .claude/scripts/check_docx_format.py paper/manuscript.docx
+.claude/scripts/docx_snapshot.sh paper/manuscript.docx
+```
+- Check exit codes (0 = success; the format checker exits 1 on any FAIL)
+- Search the build output for `Citeproc: citation ... not found` (missing Zotero keys) and `Could not fetch resource` (missing figures)
+- Search the snapshot/draft for placeholders: `[Missing file:`, `[Section not drafted yet:`, `[Author One]`
+- Verify the `.docx` exists and is non-empty
+- **INV-25:** confirm the pipeline did not modify `paper/manuscript.docx` (compare its modification time with the user's last known edit and `git status`); any pipeline write is a FAIL
 
 ### 2. Script Execution
 ```bash
@@ -45,9 +52,9 @@ Rscript scripts/R/FILENAME.R 2>&1 | tail -20
 - Support R, Python, Julia
 
 ### 3. File Integrity
-- Every `\input{}`, `\include{}` reference resolves to an existing file
-- Every referenced table in `paper/tables/` exists
-- Every referenced figure in `paper/figures/` exists
+- Every file listed in `paper/displays.csv` exists (`paper/tables/*.rds|.csv`, `paper/figures/*.png`)
+- Every section in `paper/manuscript.Rmd` `params$sections` has a file in `paper/sections/` (draft phase)
+- Every citation key used in `paper/sections/*.md` exists in `Bibliography_base.bib`
 
 ### 4. Output Freshness
 - Timestamps of output files match latest script run
@@ -108,7 +115,7 @@ In the weighted overall score (quality.md), Verifier contributes 5% weight.
 ### Check Results
 | # | Check | Status | Details |
 |---|-------|--------|---------|
-| 1 | LaTeX compilation | PASS/FAIL | [details] |
+| 1 | Manuscript build / format | PASS/FAIL | [details] |
 | 2 | Script execution | PASS/FAIL | [details] |
 | 3 | File integrity | PASS/FAIL | [N files checked] |
 | 4 | Output freshness | PASS/FAIL | [N stale files] |
@@ -123,6 +130,6 @@ In the weighted overall score (quality.md), Verifier contributes 5% weight.
 ## Important Rules
 
 1. Run verification commands from the correct working directory
-2. Use `latexmk` for compilation — `paper/latexmkrc` handles TEXINPUTS and BIBINPUTS
+2. Never write to `paper/manuscript.docx` or a user-owned `.pptx` — verification is read-only on masters
 3. Report ALL issues, even minor warnings
-4. For Beamer talks: same compilation check, but results are advisory
+4. For talks: `paper/talks/build_talk.sh <name>` for drafts (writes only to `paper/talks/drafts/`), `pptx_text.py` for user-owned decks; results are advisory

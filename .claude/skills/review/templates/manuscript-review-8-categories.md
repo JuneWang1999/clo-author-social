@@ -115,49 +115,42 @@ Run the 24-pattern AI detection check from the Writer's cleanup pass:
 
 ---
 
-## 5. APA Format and LaTeX
+## 5. APA Format (Word)
 
-Enforce all Required items from `.claude/rules/working-paper-format.md`:
+Run `python3 .claude/scripts/check_docx_format.py <file.docx> --abstract-limit <journal limit>` and fold its FAIL/WARN lines into this category. Then enforce the remaining Required items from `.claude/rules/working-paper-format.md` by reading the snapshot:
 
 | Issue | Deduction |
 |-------|-----------|
-| Not `apa7` class, or not `man` mode | -5 |
-| Loads `geometry`, `setspace`, `fancyhdr`, or `titlesec`; manual `\doublespacing` | -3 |
-| Missing `\shorttitle{}` or running head > 50 characters | -2 |
-| `\textbf{}` wrapping `\title{}` | -3 |
-| `\and` / `\thanks{}` for authors instead of `\authorsnames` / `\authorsaffiliations` | -3 |
+| Margins, font/size, or double spacing not APA | -5 |
+| Missing running head or page number | -2 |
+| Running head > 50 characters or not all caps | -1 |
+| Headings typed as bold body text (no heading style), numbered headings, or skipped levels | -2 |
+| Introduction has a heading; Method/Results/Discussion headings missing | -3 |
+| Title page missing title, authors, affiliations, or author note (non-masked) | -3 |
+| Identifying information in a masked submission | -5 |
 | Author note missing elements the journal requires (ORCID, disclosures, correspondence) | -2 |
 | Missing keywords, or JEL codes present (INV-6) | -5 |
 | Abstract exceeds 250 words or the journal limit (INV-5) | -3 |
-| Introduction has a heading; Method/Results/Discussion headings missing | -3 |
-| Manually styled or numbered headings; skipped heading levels | -2 |
-| `natbib`, `apacite`, or `bibtex` instead of biblatex-apa + biber (INV-9) | -3 |
-| `\citet`/`\citep` or hand-typed citations instead of `\textcite`/`\parencite` | -1 per, max -5 |
-| `\hline` or vertical rules (INV-3) | -3 |
+| Hand-typed reference list, or citation/reference mismatches (INV-9) | -3, plus -1 per mismatch (max -5) |
+| Vertical rules, full grid, or shading in tables (INV-3) | -3 |
 | Missing table notes beginning with *Note.* (INV-1) | -5 per table, max -15 |
 | Missing figure notes (INV-2) | -5 per figure, max -15 |
-| Caption below the table/figure instead of above | -2 per, max -6 |
+| Number/title below a table or figure instead of above | -2 per, max -6 |
+| Table or figure not called out in text, or numbered out of order (INV-10) | -2 per, max -6 |
 | Asterisks without a probability note, or asterisks the journal profile disallows (INV-4) | -3 |
-| `hyperref` not loaded second-to-last, or loaded with clashing options (INV-10) | -2 |
-| Missing `cleveref` after `hyperref` (INV-10) | -2 |
-| Manual `Table~\ref{}` instead of `\Cref{}` | -1 per, max -5 |
-| Missing `microtype` | -2 |
-| References single-spaced or shrunk (`\small` before `\printbibliography`) | -2 |
-| No titles inside figures -- titles in `\caption{}` only (INV-12) | -3 per, max -9 |
-| R/Python/Julia output includes `\begin{table}` wrapper (INV-13) | -3 per, max -9 |
+| Table pasted as an image, or title inside a figure image (INV-12, INV-13) | -3 per, max -9 |
+| References not double-spaced or without hanging indents | -2 |
 
 ---
 
-## 6. Compilation
+## 6. Build Integrity
 
-Verifier-lite checks:
-
-- Does the paper compile with `latexmk` (pdfLaTeX + biber) without errors? If not: -20
-- All `\ref{}` and `\cref{}` references resolved (no "??" in output)? -3 per unresolved
-- All `\textcite{}` / `\parencite{}` keys exist in the bibliography file? -3 per missing
-- biber warnings about missing DOIs or malformed entries? -1 per, max -5
-- All cited tables/figures exist in `paper/tables/` and `paper/figures/`? -5 per missing
-- No overfull/underfull hbox warnings exceeding 10pt? -1 per, max -5
+- **Draft phase:** `Rscript paper/build_manuscript.R` succeeds? If not: -20
+- Placeholders in the output (`[Missing file: …]`, `[Section not drafted yet: …]`, `[Author One]`-style template text)? -5 per, max -15
+- pandoc citation warnings (`Citeproc: citation … not found`)? -3 per missing key
+- Every file listed in `displays.csv` exists in `paper/tables/` / `paper/figures/`? -5 per missing
+- **Word-master phase:** `paper/manuscript.docx` modified by the pipeline instead of the user (INV-25)? -20 and flag to the Orchestrator
+- Unresolved comments or tracked changes left in a file labeled for submission? -2 (report, do not resolve)
 
 ---
 
@@ -192,7 +185,7 @@ If the style guide is still a template, report: "Voice fidelity not scored -- st
 
 ## Standalone Mode
 
-When invoked via `/review [file.tex]` or `/review --proofread`, run categories **4, 5, 6, 8 only** (writing quality + LaTeX + compilation + notation). No strategy alignment -- just prose and format quality.
+When invoked via `/review [file.docx]` or `/review --proofread`, run categories **4, 5, 6, 8 only** (writing quality + APA/Word format + build integrity + notation). No strategy alignment -- just prose and format quality.
 
 When invoked via `/review --all` or `/review --peer`, run all 8 categories.
 
@@ -214,9 +207,9 @@ When invoked via `/review --all` or `/review --peer`, run all 8 categories.
 ## Claims and Evidence: [SUPPORTED/GAPS/UNSUPPORTED]
 ## Identification Fidelity: [FAITHFUL/OVERCLAIMED/MISREPRESENTED]
 ## Writing Quality: [CLEAN/AI PATTERNS FOUND/NEEDS REWRITE]
-## APA Format and LaTeX: [COMPLIANT/ISSUES/NON-COMPLIANT]
+## APA Format (Word): [COMPLIANT/ISSUES/NON-COMPLIANT]
 ## JARS Completeness (INV-23): [COMPLETE/GAPS]
-## Compilation: [PASS/WARNINGS/FAIL]
+## Build Integrity: [PASS/WARNINGS/FAIL]
 ## Voice Fidelity: [MATCH/DRIFT/NOT SCORED]
 ## Notation Consistency: [CONSISTENT/INCONSISTENCIES]
 

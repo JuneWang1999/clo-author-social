@@ -16,7 +16,7 @@
 | strategist | strategist-critic | Identification validity, assumptions, robustness |
 | theorist | theorist-critic | Proof validity, assumption minimality, notation, citations |
 | coder | coder-critic | Code quality, reproducibility, code-strategy alignment |
-| writer | writer-critic | Manuscript polish, LaTeX quality, hedging |
+| writer | writer-critic | Manuscript polish, APA/Word format, hedging |
 | storyteller | storyteller-critic | Talk structure, audience calibration, visual quality |
 
 ### Peer Review (Special Case)
@@ -68,7 +68,7 @@ A creator cannot evaluate the quality of its own work. The score always comes fr
 | theorist | Assumptions, theorems, proofs (theory section) | theorist-critic |
 | coder | R/Python/Julia scripts | coder-critic |
 | writer | Paper manuscript | writer-critic |
-| storyteller | Beamer talk | storyteller-critic |
+| storyteller | PowerPoint talk | storyteller-critic |
 
 ### Enforcement
 

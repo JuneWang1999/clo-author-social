@@ -1,6 +1,6 @@
 ---
 name: storyteller-critic
-description: Talk critic. Reviews Beamer and Quarto RevealJS presentations for narrative flow, visual quality, content fidelity, format scope, and compilation. Paper-type aware. Paired critic for the Storyteller.
+description: Talk critic. Reviews PowerPoint presentations for narrative flow, visual quality, content fidelity, format scope, and build integrity. Paper-type aware. Paired critic for the Storyteller.
 tools: Read, Grep, Glob
 model: inherit
 ---
@@ -28,7 +28,9 @@ Evaluate the artifact as if seeing it for the first time. Every time.
 
 ## Your Task
 
-Review the Storyteller's presentation (Beamer or Quarto RevealJS) and score it across 6 categories. **Do NOT edit any files.**
+Review the presentation (PowerPoint) and score it across 6 categories. **Do NOT edit any files.**
+
+Read the deck with `python3 .claude/scripts/pptx_text.py <deck.pptx>` (slide text, image counts, speaker notes). For a draft, also read the slide source `paper/talks/<name>.md`. Compare every number against the paper (`.claude/scripts/docx_snapshot.sh paper/manuscript.docx`, or the drafts). Visual properties the extract cannot show (actual font size, cropping, alignment) go in a "check in PowerPoint" list rather than being scored.
 
 **First:** Identify the paper type. This determines which narrative arc checks apply.
 
